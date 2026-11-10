@@ -1,0 +1,61 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design tokens. <html data-theme="light|dark"> forces a theme; with none set,
+   the device setting (prefers-color-scheme) applies. Signal pink on deep navy. */
+:root {
+  --bg: 243 246 251;
+  --surface: 255 255 255;
+  --fg: 16 24 40;
+  --muted: 95 105 124;
+  --line: 222 228 238;
+  --brand: 214 31 105;
+  --brand-fg: 255 255 255;
+  --danger: 200 30 30;
+  --success: 21 128 61;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    --bg: 11 16 32;
+    --surface: 20 27 48;
+    --fg: 239 242 250;
+    --muted: 150 160 184;
+    --line: 38 47 72;
+    --brand: 255 107 156;
+    --brand-fg: 20 6 14;
+    --danger: 248 113 113;
+    --success: 74 222 128;
+    color-scheme: dark;
+  }
+}
+
+:root[data-theme='dark'] {
+  --bg: 11 16 32;
+  --surface: 20 27 48;
+  --fg: 239 242 250;
+  --muted: 150 160 184;
+  --line: 38 47 72;
+  --brand: 255 107 156;
+  --brand-fg: 20 6 14;
+  --danger: 248 113 113;
+  --success: 74 222 128;
+  color-scheme: dark;
+}
+
+@layer components {
+  .input {
+    @apply w-full rounded-xl border border-line bg-surface px-4 py-3 text-fg placeholder:text-muted focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/40;
+  }
+  .btn-primary {
+    @apply w-full rounded-xl bg-brand px-4 py-3 font-semibold text-brand-fg transition disabled:cursor-not-allowed disabled:opacity-60;
+  }
+  .btn-ghost {
+    @apply rounded-lg px-3 py-2 text-sm font-medium text-muted transition hover:text-fg;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-medium;
+  }
+}
