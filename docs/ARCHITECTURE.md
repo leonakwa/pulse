@@ -21,8 +21,8 @@ sets `profiles.status`; the app shows "Account unavailable" and RLS hides the pr
 ## Roadmap
 | # | Phase | Status |
 |---|-------|--------|
-| 1 | Scaffold, email auth, foundation schema | Written, not yet run or tested |
-| 2 | Profiles (view, edit) | Not started |
+| 1 | Scaffold, email auth, foundation schema | Sign-up and login confirmed working |
+| 2 | Profiles (view, edit) | Written, not yet tested |
 | 3 | Storage and image uploads | Not started |
 | 4 | Posts and home feed | Not started |
 | 5 | Likes, comments, follows UI | Not started |

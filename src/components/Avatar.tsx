@@ -1,28 +1,39 @@
-import React from 'react';
+import type { CSSProperties } from 'react';
 
-interface AvatarProps {
-  name?: string | null;
-  url?: string | null;
-  size?: number;
-  className?: string;
-}
+type Props = { name: string; url?: string | null; size?: number; className?: string };
 
-export function Avatar({ name, url, size = 40, className = '' }: AvatarProps) {
+// Shows the profile picture, or the person's initials until one is uploaded.
+export function Avatar({ name, url, size = 40, className = '' }: Props) {
+  const initials =
+    name
+      .trim()
+      .split(/\s+/)
+      .slice(0, 2)
+      .map((w) => w[0]?.toUpperCase() ?? '')
+      .join('') || '?';
+  const style: CSSProperties = { width: size, height: size, fontSize: Math.round(size * 0.38) };
+
+  if (url) {
+    return (
+      // eslint-disable-next-line @next/next/no-img-element
+      <img
+        src={url}
+        alt={`${name}'s profile picture`}
+        width={size}
+        height={size}
+        loading="lazy"
+        style={style}
+        className={`shrink-0 rounded-full object-cover ${className}`}
+      />
+    );
+  }
   return (
-    <div 
-      style={{ width: size, height: size }} 
-      className={`relative overflow-hidden rounded-full bg-muted flex items-center justify-center ${className}`}
+    <span
+      aria-hidden="true"
+      style={style}
+      className={`inline-flex shrink-0 items-center justify-center rounded-full bg-brand/15 font-display font-bold text-brand ${className}`}
     >
-      {url ? (
-        <img src={url} alt={name || 'Avatar'} className="h-full w-full object-cover" />
-      ) : (
-        <span className="text-sm font-semibold text-muted-foreground">
-          {name ? name.charAt(0).toUpperCase() : '?'}
-        </span>
-      )}
-    </div>
+      {initials}
+    </span>
   );
 }
-
-export default Avatar;
-

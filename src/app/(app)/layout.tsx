@@ -2,8 +2,7 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { signOut } from '@/lib/auth-actions';
 import { Wordmark } from '@/components/Wordmark';
-import BottomNav from "@/components/BottomNav";
-
+import { BottomNav } from '@/components/BottomNav';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -12,7 +11,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   } = await supabase.auth.getUser();
   if (!user) redirect('/login');
 
-  const { data: profile } = await supabase.from('profiles').select('status').eq('id', user.id).maybeSingle();
+  const { data: profile } = await supabase.from('profiles').select('status, username').eq('id', user.id).maybeSingle();
 
   // Suspended or deactivated accounts cannot use the app.
   if (profile && profile.status !== 'active') {
@@ -35,7 +34,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           <button className="btn-ghost">Sign out</button>
         </form>
       </header>
-      <main className="p-4">{children}</main>
+      <main className="p-4 pb-24">{children}</main>
+      <BottomNav profilePath={profile ? `/u/${profile.username}` : '/feed'} />
     </div>
   );
 }
