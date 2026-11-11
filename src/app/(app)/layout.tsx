@@ -2,6 +2,8 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { signOut } from '@/lib/auth-actions';
 import { Wordmark } from '@/components/Wordmark';
+import BottomNav from "@/components/BottomNav";
+
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
