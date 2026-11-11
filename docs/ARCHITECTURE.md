@@ -23,8 +23,8 @@ sets `profiles.status`; the app shows "Account unavailable" and RLS hides the pr
 |---|-------|--------|
 | 1 | Scaffold, email auth, foundation schema | Sign-up and login confirmed working |
 | 2 | Profiles (view, edit) | Confirmed working |
-| 3 | Storage and image uploads | Written, not yet tested |
-| 4 | Posts and home feed | Not started |
+| 3 | Storage and image uploads | Confirmed working |
+| 4 | Posts and home feed | Written, not yet tested |
 | 5 | Likes, comments, follows UI | Not started |
 | 6 | Discover and search | Not started |
 | 7 | Private messaging (realtime) | Not started |
@@ -42,3 +42,10 @@ Storage, which avoids Vercel request-size limits. Storage policies only allow wr
 buckets enforce size and type limits themselves. A server action then checks the file really exists before saving its
 URL to the profile; if saving fails the file is deleted again, so there are no half-saved states. The `post-images`
 bucket is created now for phase 4.
+
+## Posts and feed (phase 4)
+Clients cannot insert posts directly. The `create_post()` database function validates the text, checks every image
+exists in storage and belongs to the user, rate-limits (20 posts per hour) and saves the post and its images in one
+transaction. Edits can only change the text (column-level grant plus a trigger). The feed uses keyset pagination on
+`(created_at, id)`, 10 posts per page, loaded as you scroll. "Following" shows your posts plus people you follow
+(capped at 1000 follows for now); "Discover" shows everyone's. Likes, comments and the follow button arrive in phase 5.

@@ -2,7 +2,9 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
+import { getPostsPage } from '@/lib/posts';
 import { Avatar } from '@/components/Avatar';
+import { Feed } from '@/components/Feed';
 
 type Props = { params: Promise<{ username: string }> };
 
@@ -26,9 +28,11 @@ export default async function ProfilePage({ params }: Props) {
 
   if (!profile) notFound();
 
-  const [followers, following] = await Promise.all([
+  const [followers, following, postCount, page] = await Promise.all([
     supabase.from('follows').select('*', { count: 'exact', head: true }).eq('following_id', profile.id),
     supabase.from('follows').select('*', { count: 'exact', head: true }).eq('follower_id', profile.id),
+    supabase.from('posts').select('*', { count: 'exact', head: true }).eq('author_id', profile.id),
+    getPostsPage(supabase, { scope: 'author', userId: user!.id, authorId: profile.id }),
   ]);
 
   const isOwn = user?.id === profile.id;
@@ -62,6 +66,12 @@ export default async function ProfilePage({ params }: Props) {
 
         <dl className="mt-4 flex gap-6">
           <div>
+            <dt className="sr-only">Posts</dt>
+            <dd>
+              <span className="font-bold">{postCount.count ?? 0}</span> <span className="text-muted">Posts</span>
+            </dd>
+          </div>
+          <div>
             <dt className="sr-only">Followers</dt>
             <dd>
               <span className="font-bold">{followers.count ?? 0}</span> <span className="text-muted">Followers</span>
@@ -76,9 +86,16 @@ export default async function ProfilePage({ params }: Props) {
         </dl>
       </div>
 
-      <section className="mt-8 rounded-2xl border border-dashed border-line px-4 py-10 text-center">
-        <p className="font-semibold">No posts yet</p>
-        <p className="mt-1 text-sm text-muted">Posts will appear here once posting is added.</p>
+      <section className="mt-6 border-t border-line">
+        <Feed
+          scope="author"
+          authorId={profile.id}
+          currentUserId={user!.id}
+          initialPosts={page.posts}
+          initialCursor={page.nextCursor}
+          emptyTitle="No posts yet"
+          emptyText={isOwn ? 'Share your first post from the Home tab.' : 'This person has not posted yet.'}
+        />
       </section>
     </article>
   );
