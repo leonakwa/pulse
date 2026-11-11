@@ -1,0 +1,15 @@
+import type { Metadata } from 'next';
+import { FollowList } from '@/components/FollowList';
+
+type Props = { params: Promise<{ username: string }>; searchParams: Promise<{ page?: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { username } = await params;
+  return { title: `Following by @${username}` };
+}
+
+export default async function FollowingPage({ params, searchParams }: Props) {
+  const { username } = await params;
+  const { page } = await searchParams;
+  return <FollowList username={username} kind="following" page={Math.max(1, Math.floor(Number(page)) || 1)} />;
+}

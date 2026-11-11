@@ -58,7 +58,7 @@ export async function createPost(body: string, imagePaths: string[]): Promise<{ 
     return { error: friendly(error?.message) };
   }
 
-  const post = await getPostById(supabase, postId);
+  const post = await getPostById(supabase, postId, user.id);
   if (!post) return { error: 'Your post was saved but could not be loaded. Refresh the page.' };
 
   revalidatePath('/', 'layout');

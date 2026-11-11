@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/server';
 import { getPostsPage } from '@/lib/posts';
 import { Avatar } from '@/components/Avatar';
 import { Feed } from '@/components/Feed';
+import { FollowButton } from '@/components/FollowButton';
 
 type Props = { params: Promise<{ username: string }> };
 
@@ -19,6 +20,7 @@ export default async function ProfilePage({ params }: Props) {
   const {
     data: { user },
   } = await supabase.auth.getUser();
+  const me = user!;
 
   const { data: profile } = await supabase
     .from('profiles')
@@ -28,15 +30,20 @@ export default async function ProfilePage({ params }: Props) {
 
   if (!profile) notFound();
 
-  const [followers, following, postCount, page] = await Promise.all([
+  const isOwn = me.id === profile.id;
+
+  const [followers, following, postCount, page, iFollow] = await Promise.all([
     supabase.from('follows').select('*', { count: 'exact', head: true }).eq('following_id', profile.id),
     supabase.from('follows').select('*', { count: 'exact', head: true }).eq('follower_id', profile.id),
     supabase.from('posts').select('*', { count: 'exact', head: true }).eq('author_id', profile.id),
-    getPostsPage(supabase, { scope: 'author', userId: user!.id, authorId: profile.id }),
+    getPostsPage(supabase, { scope: 'author', userId: me.id, authorId: profile.id }),
+    isOwn
+      ? Promise.resolve({ count: 0 })
+      : supabase.from('follows').select('*', { count: 'exact', head: true }).eq('follower_id', me.id).eq('following_id', profile.id),
   ]);
 
-  const isOwn = user?.id === profile.id;
   const joined = new Date(profile.created_at).toLocaleDateString('en', { month: 'long', year: 'numeric' });
+  const base = `/u/${profile.username}`;
 
   return (
     <article>
@@ -49,11 +56,15 @@ export default async function ProfilePage({ params }: Props) {
 
       <div className="-mt-12 flex items-end justify-between px-3">
         <Avatar name={profile.full_name} url={profile.avatar_url} size={96} className="ring-4 ring-bg" />
-        {isOwn ? (
-          <Link href="/settings/profile" className="mb-1 rounded-full border border-line px-4 py-2 text-sm font-semibold hover:border-brand">
-            Edit profile
-          </Link>
-        ) : null}
+        <div className="mb-1">
+          {isOwn ? (
+            <Link href="/settings/profile" className="rounded-full border border-line px-4 py-2 text-sm font-semibold hover:border-brand">
+              Edit profile
+            </Link>
+          ) : (
+            <FollowButton targetId={profile.id} initialFollowing={(iFollow.count ?? 0) > 0} />
+          )}
+        </div>
       </div>
 
       <div className="mt-3 px-1">
@@ -74,13 +85,17 @@ export default async function ProfilePage({ params }: Props) {
           <div>
             <dt className="sr-only">Followers</dt>
             <dd>
-              <span className="font-bold">{followers.count ?? 0}</span> <span className="text-muted">Followers</span>
+              <Link href={`${base}/followers`} className="hover:underline">
+                <span className="font-bold">{followers.count ?? 0}</span> <span className="text-muted">Followers</span>
+              </Link>
             </dd>
           </div>
           <div>
             <dt className="sr-only">Following</dt>
             <dd>
-              <span className="font-bold">{following.count ?? 0}</span> <span className="text-muted">Following</span>
+              <Link href={`${base}/following`} className="hover:underline">
+                <span className="font-bold">{following.count ?? 0}</span> <span className="text-muted">Following</span>
+              </Link>
             </dd>
           </div>
         </dl>
@@ -90,7 +105,7 @@ export default async function ProfilePage({ params }: Props) {
         <Feed
           scope="author"
           authorId={profile.id}
-          currentUserId={user!.id}
+          currentUserId={me.id}
           initialPosts={page.posts}
           initialCursor={page.nextCursor}
           emptyTitle="No posts yet"

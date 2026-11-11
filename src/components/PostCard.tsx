@@ -3,6 +3,8 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { Avatar } from '@/components/Avatar';
+import { Comments } from '@/components/Comments';
+import { toggleLike } from '@/lib/engagement-actions';
 import { deletePost, updatePost } from '@/lib/post-actions';
 import { timeAgo } from '@/lib/time';
 import type { PostView } from '@/lib/posts';
@@ -10,15 +12,22 @@ import type { PostView } from '@/lib/posts';
 type Props = {
   post: PostView;
   isOwn: boolean;
+  currentUserId: string;
   onDeleted: (id: string) => void;
   onUpdated: (id: string, body: string, editedAt: string | null) => void;
 };
 
-export function PostCard({ post, isOwn, onDeleted, onUpdated }: Props) {
+export function PostCard({ post, isOwn, currentUserId, onDeleted, onUpdated }: Props) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(post.body);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const [liked, setLiked] = useState(post.likedByMe);
+  const [likeCount, setLikeCount] = useState(post.likeCount);
+  const [likeBusy, setLikeBusy] = useState(false);
+  const [commentCount, setCommentCount] = useState(post.commentCount);
+  const [showComments, setShowComments] = useState(false);
 
   async function save() {
     setBusy(true);
@@ -40,6 +49,23 @@ export function PostCard({ post, isOwn, onDeleted, onUpdated }: Props) {
       return setError(res.error);
     }
     onDeleted(post.id);
+  }
+
+  async function like() {
+    if (likeBusy) return;
+    const next = !liked;
+    setLikeBusy(true);
+    setError(null);
+    setLiked(next); // shows the change straight away
+    setLikeCount((c) => Math.max(0, c + (next ? 1 : -1)));
+    const res = await toggleLike(post.id, next);
+    setLikeBusy(false);
+    if (res.error) {
+      setLiked(!next);
+      setLikeCount((c) => Math.max(0, c + (next ? -1 : 1)));
+      return setError(res.error);
+    }
+    if (typeof res.likeCount === 'number') setLikeCount(res.likeCount);
   }
 
   const profileHref = `/u/${post.author.username}`;
@@ -110,16 +136,45 @@ export function PostCard({ post, isOwn, onDeleted, onUpdated }: Props) {
             </div>
           ) : null}
 
-          {isOwn && !editing ? (
-            <div className="mt-2 flex gap-1 text-sm">
-              <button type="button" onClick={() => setEditing(true)} disabled={busy} className="btn-ghost !px-2 !py-1">
-                Edit
-              </button>
-              <button type="button" onClick={remove} disabled={busy} className="btn-ghost !px-2 !py-1">
-                {busy ? 'Deleting...' : 'Delete'}
-              </button>
-            </div>
-          ) : null}
+          <div className="mt-2 flex items-center gap-5 text-sm">
+            <button
+              type="button"
+              onClick={like}
+              disabled={likeBusy}
+              aria-pressed={liked}
+              aria-label={liked ? 'Unlike' : 'Like'}
+              className={`flex items-center gap-1.5 py-1 ${liked ? 'text-brand' : 'text-muted hover:text-fg'}`}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill={liked ? 'currentColor' : 'none'} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M12 21s-7-4.6-9.3-9.1C1.1 8.6 2.9 5 6.3 5c2 0 3.4 1.1 4.2 2.3L12 9l1.5-1.7C14.3 6.1 15.7 5 17.7 5c3.4 0 5.2 3.6 3.6 6.9C19 16.4 12 21 12 21z" />
+              </svg>
+              {likeCount}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowComments((v) => !v)}
+              aria-expanded={showComments}
+              aria-label="Comments"
+              className={`flex items-center gap-1.5 py-1 ${showComments ? 'text-fg' : 'text-muted hover:text-fg'}`}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z" />
+              </svg>
+              {commentCount}
+            </button>
+            {isOwn && !editing ? (
+              <>
+                <button type="button" onClick={() => setEditing(true)} disabled={busy} className="py-1 text-muted hover:text-fg">
+                  Edit
+                </button>
+                <button type="button" onClick={remove} disabled={busy} className="py-1 text-muted hover:text-danger">
+                  {busy ? 'Deleting...' : 'Delete'}
+                </button>
+              </>
+            ) : null}
+          </div>
+
+          {showComments ? <Comments postId={post.id} currentUserId={currentUserId} onCount={setCommentCount} /> : null}
 
           {error ? (
             <p role="alert" className="mt-2 text-sm text-danger">

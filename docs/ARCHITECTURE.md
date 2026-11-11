@@ -24,8 +24,8 @@ sets `profiles.status`; the app shows "Account unavailable" and RLS hides the pr
 | 1 | Scaffold, email auth, foundation schema | Sign-up and login confirmed working |
 | 2 | Profiles (view, edit) | Confirmed working |
 | 3 | Storage and image uploads | Confirmed working |
-| 4 | Posts and home feed | Written, not yet tested |
-| 5 | Likes, comments, follows UI | Not started |
+| 4 | Posts and home feed | Written, awaiting test result |
+| 5 | Likes, comments, follows UI | Written, not yet tested |
 | 6 | Discover and search | Not started |
 | 7 | Private messaging (realtime) | Not started |
 | 8 | Notifications | Not started |
@@ -49,3 +49,10 @@ exists in storage and belongs to the user, rate-limits (20 posts per hour) and s
 transaction. Edits can only change the text (column-level grant plus a trigger). The feed uses keyset pagination on
 `(created_at, id)`, 10 posts per page, loaded as you scroll. "Following" shows your posts plus people you follow
 (capped at 1000 follows for now); "Discover" shows everyone's. Likes, comments and the follow button arrive in phase 5.
+
+## Engagement (phase 5)
+Likes (`post_likes`, one per person per post), comments (`post_comments`, up to 300 characters, newest at the bottom)
+and follows are plain tables protected by Row Level Security. Counters on `posts` (`like_count`, `comment_count`) are
+maintained by database triggers, so the browser cannot fake them. Per-hour limits (300 likes, 30 comments, 100
+follows) are enforced in the database. You can only follow active accounts, never yourself, and never twice.
+Phase 8 (notifications) and phase 9 (XP) will hook into these same tables with triggers.

@@ -81,6 +81,7 @@ export function Feed({ scope, authorId, currentUserId, initialPosts, initialCurs
             key={post.id}
             post={post}
             isOwn={post.author.id === currentUserId}
+            currentUserId={currentUserId}
             onDeleted={(id) => setPosts((prev) => prev.filter((p) => p.id !== id))}
             onUpdated={(id, body, editedAt) =>
               setPosts((prev) => prev.map((p) => (p.id === id ? { ...p, body, editedAt } : p)))
