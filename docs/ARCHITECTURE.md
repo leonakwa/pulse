@@ -22,8 +22,8 @@ sets `profiles.status`; the app shows "Account unavailable" and RLS hides the pr
 | # | Phase | Status |
 |---|-------|--------|
 | 1 | Scaffold, email auth, foundation schema | Sign-up and login confirmed working |
-| 2 | Profiles (view, edit) | Written, not yet tested |
-| 3 | Storage and image uploads | Not started |
+| 2 | Profiles (view, edit) | Confirmed working |
+| 3 | Storage and image uploads | Written, not yet tested |
 | 4 | Posts and home feed | Not started |
 | 5 | Likes, comments, follows UI | Not started |
 | 6 | Discover and search | Not started |
@@ -35,3 +35,10 @@ sets `profiles.status`; the app shows "Account unavailable" and RLS hides the pr
 | 12 | Admin dashboard | Not started |
 
 Phone-number sign-in needs a paid SMS provider (for example Twilio), so email comes first.
+
+## Image uploads (phase 3)
+Photos are cropped and shrunk in the browser (JPEG, about a few hundred KB), then uploaded straight to Supabase
+Storage, which avoids Vercel request-size limits. Storage policies only allow writes to `<your user id>/...`, and the
+buckets enforce size and type limits themselves. A server action then checks the file really exists before saving its
+URL to the profile; if saving fails the file is deleted again, so there are no half-saved states. The `post-images`
+bucket is created now for phase 4.
