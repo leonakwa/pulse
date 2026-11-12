@@ -12,6 +12,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   if (!user) redirect('/login');
 
   const { data: profile } = await supabase.from('profiles').select('status, username').eq('id', user.id).maybeSingle();
+  const { data: unread } = await supabase.rpc('unread_conversation_count');
 
   // Suspended or deactivated accounts cannot use the app.
   if (profile && profile.status !== 'active') {
@@ -35,7 +36,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         </form>
       </header>
       <main className="p-4 pb-24">{children}</main>
-      <BottomNav profilePath={profile ? `/u/${profile.username}` : '/feed'} />
+      <BottomNav profilePath={profile ? `/u/${profile.username}` : '/feed'} initialUnread={typeof unread === 'number' ? unread : 0} />
     </div>
   );
 }

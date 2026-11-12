@@ -26,8 +26,8 @@ sets `profiles.status`; the app shows "Account unavailable" and RLS hides the pr
 | 3 | Storage and image uploads | Confirmed working |
 | 4 | Posts and home feed | Written, awaiting test result |
 | 5 | Likes, comments, follows UI | Confirmed working |
-| 6 | Discover and search | Written, not yet tested |
-| 7 | Private messaging (realtime) | Not started |
+| 6 | Discover and search | Confirmed working |
+| 7 | Private messaging (realtime) | Written, not yet tested |
 | 8 | Notifications | Not started |
 | 9 | XP, levels, leaderboard | Not started |
 | 10 | Sharing | Not started |
@@ -63,3 +63,11 @@ query), wildcards are escaped, exact then prefix matches rank first, and trigram
 from `suggested_accounts()` (active accounts you do not follow, most-followed first). Popular posts are the most-liked
 of the last 30 days. Known limits: suggestions count followers per row, which is fine for thousands of users but should
 become a stored counter later; private accounts (phase 11) will need to be excluded from search.
+
+## Messaging (phase 7)
+One conversation per pair of people (`direct_key`), created by `start_conversation()`. Only the two participants can
+read or write (rules use the `is_participant()` helper). Messages are text only, up to 2000 characters, limited to 30
+a minute, and cannot be edited or deleted yet. Unread state is `last_read_at` per participant, advanced by
+`mark_conversation_read()` using the database clock. New messages reach the browser through Supabase Realtime
+(`postgres_changes` on `messages`, filtered by the same access rules). Not built yet: blocking users, message
+requests, deleting messages, read receipts.

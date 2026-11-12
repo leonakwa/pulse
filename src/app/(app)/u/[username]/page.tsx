@@ -6,6 +6,7 @@ import { getPostsPage } from '@/lib/posts';
 import { Avatar } from '@/components/Avatar';
 import { Feed } from '@/components/Feed';
 import { FollowButton } from '@/components/FollowButton';
+import { MessageButton } from '@/components/MessageButton';
 
 type Props = { params: Promise<{ username: string }> };
 
@@ -62,7 +63,10 @@ export default async function ProfilePage({ params }: Props) {
               Edit profile
             </Link>
           ) : (
-            <FollowButton targetId={profile.id} initialFollowing={(iFollow.count ?? 0) > 0} />
+            <div className="flex items-start gap-2">
+              <MessageButton userId={profile.id} />
+              <FollowButton targetId={profile.id} initialFollowing={(iFollow.count ?? 0) > 0} />
+            </div>
           )}
         </div>
       </div>
