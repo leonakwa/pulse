@@ -2,6 +2,7 @@ import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { signOut } from '@/lib/auth-actions';
 import { Wordmark } from '@/components/Wordmark';
+import { NotificationBell } from '@/components/NotificationBell';
 import { BottomNav } from '@/components/BottomNav';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
@@ -13,6 +14,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   const { data: profile } = await supabase.from('profiles').select('status, username').eq('id', user.id).maybeSingle();
   const { data: unread } = await supabase.rpc('unread_conversation_count');
+  const { data: unreadNotifications } = await supabase.rpc('unread_notification_count');
 
   // Suspended or deactivated accounts cannot use the app.
   if (profile && profile.status !== 'active') {
@@ -31,9 +33,12 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     <div className="mx-auto min-h-dvh w-full max-w-2xl">
       <header className="sticky top-0 z-10 flex items-center justify-between border-b border-line bg-bg/90 px-4 py-3 backdrop-blur">
         <Wordmark className="!text-2xl" />
-        <form action={signOut}>
-          <button className="btn-ghost">Sign out</button>
-        </form>
+        <div className="flex items-center gap-1">
+          <NotificationBell userId={user.id} initialUnread={typeof unreadNotifications === 'number' ? unreadNotifications : 0} />
+          <form action={signOut}>
+            <button className="btn-ghost">Sign out</button>
+          </form>
+        </div>
       </header>
       <main className="p-4 pb-24">{children}</main>
       <BottomNav profilePath={profile ? `/u/${profile.username}` : '/feed'} initialUnread={typeof unread === 'number' ? unread : 0} />

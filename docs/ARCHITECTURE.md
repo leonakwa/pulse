@@ -27,8 +27,8 @@ sets `profiles.status`; the app shows "Account unavailable" and RLS hides the pr
 | 4 | Posts and home feed | Written, awaiting test result |
 | 5 | Likes, comments, follows UI | Confirmed working |
 | 6 | Discover and search | Confirmed working |
-| 7 | Private messaging (realtime) | Written, not yet tested |
-| 8 | Notifications | Not started |
+| 7 | Private messaging (realtime) | Confirmed working |
+| 8 | Notifications | Written, not yet tested |
 | 9 | XP, levels, leaderboard | Not started |
 | 10 | Sharing | Not started |
 | 11 | Settings, themes, privacy policy | Not started |
@@ -71,3 +71,11 @@ a minute, and cannot be edited or deleted yet. Unread state is `last_read_at` pe
 `mark_conversation_read()` using the database clock. New messages reach the browser through Supabase Realtime
 (`postgres_changes` on `messages`, filtered by the same access rules). Not built yet: blocking users, message
 requests, deleting messages, read receipts.
+
+## Notifications (phase 8)
+Created only by database triggers on follows, likes, comments and messages; the browser can read its own and mark them
+read, nothing else. Triggers skip your own actions, respect `user_settings.notify_*` (the toggles arrive in phase 11),
+and remove the notification again when the action is undone (unlike, unfollow, deleted comment). Message
+notifications are one per conversation until it is read. The bell in the header and the Notifications page update live
+through Realtime. Posts now have their own page (`/p/<id>`), which notifications link to and phase 10 sharing will reuse.
+Not built yet: grouping ("A and 5 others liked your post"), push notifications.

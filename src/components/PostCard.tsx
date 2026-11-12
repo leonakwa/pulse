@@ -15,9 +15,10 @@ type Props = {
   currentUserId: string;
   onDeleted: (id: string) => void;
   onUpdated: (id: string, body: string, editedAt: string | null) => void;
+  defaultShowComments?: boolean;
 };
 
-export function PostCard({ post, isOwn, currentUserId, onDeleted, onUpdated }: Props) {
+export function PostCard({ post, isOwn, currentUserId, onDeleted, onUpdated, defaultShowComments = false }: Props) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(post.body);
   const [busy, setBusy] = useState(false);
@@ -27,7 +28,7 @@ export function PostCard({ post, isOwn, currentUserId, onDeleted, onUpdated }: P
   const [likeCount, setLikeCount] = useState(post.likeCount);
   const [likeBusy, setLikeBusy] = useState(false);
   const [commentCount, setCommentCount] = useState(post.commentCount);
-  const [showComments, setShowComments] = useState(false);
+  const [showComments, setShowComments] = useState(defaultShowComments);
 
   async function save() {
     setBusy(true);
@@ -84,9 +85,11 @@ export function PostCard({ post, isOwn, currentUserId, onDeleted, onUpdated }: P
             </Link>
             <span className="text-sm text-muted">
               @{post.author.username} ·{' '}
-              <time dateTime={post.createdAt} suppressHydrationWarning>
-                {timeAgo(post.createdAt)}
-              </time>
+              <Link href={`/p/${post.id}`} className="hover:underline">
+                <time dateTime={post.createdAt} suppressHydrationWarning>
+                  {timeAgo(post.createdAt)}
+                </time>
+              </Link>
               {post.editedAt ? ' · edited' : ''}
             </span>
           </div>
