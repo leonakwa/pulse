@@ -109,3 +109,21 @@ export async function getPostById(supabase: SupabaseClient, id: string, viewerId
   const liked = await getLikedIds(supabase, viewerId, [id]);
   return toPostView(supabase, data as unknown as RawPost, liked);
 }
+
+// Most-liked posts from the last 30 days (falls back to newest when nothing has likes yet).
+export async function getPopularPosts(supabase: SupabaseClient, viewerId: string, limit = 10): Promise<PostView[]> {
+  const since = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString();
+  const { data, error } = await supabase
+    .from('posts')
+    .select(SELECT)
+    .gte('created_at', since)
+    .order('like_count', { ascending: false })
+    .order('comment_count', { ascending: false })
+    .order('created_at', { ascending: false })
+    .limit(limit);
+  if (error) throw new Error('Could not load posts.');
+
+  const rows = (data ?? []) as unknown as RawPost[];
+  const liked = await getLikedIds(supabase, viewerId, rows.map((r) => r.id));
+  return rows.map((r) => toPostView(supabase, r, liked));
+}

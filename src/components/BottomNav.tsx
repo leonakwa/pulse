@@ -14,9 +14,20 @@ export function BottomNav({ profilePath }: { profilePath: string }) {
       icon: <path d="M3 11.5 12 4l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" />,
     },
     {
+      href: '/discover',
+      label: 'Discover',
+      active: pathname.startsWith('/discover'),
+      icon: (
+        <>
+          <circle cx="11" cy="11" r="7" />
+          <path d="m20 20-3.5-3.5" />
+        </>
+      ),
+    },
+    {
       href: profilePath,
       label: 'Profile',
-      active: pathname === profilePath || pathname.startsWith('/settings'),
+      active: pathname.startsWith('/u/') || pathname.startsWith('/settings'),
       icon: (
         <>
           <circle cx="12" cy="8" r="4" />

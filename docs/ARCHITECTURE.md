@@ -25,8 +25,8 @@ sets `profiles.status`; the app shows "Account unavailable" and RLS hides the pr
 | 2 | Profiles (view, edit) | Confirmed working |
 | 3 | Storage and image uploads | Confirmed working |
 | 4 | Posts and home feed | Written, awaiting test result |
-| 5 | Likes, comments, follows UI | Written, not yet tested |
-| 6 | Discover and search | Not started |
+| 5 | Likes, comments, follows UI | Confirmed working |
+| 6 | Discover and search | Written, not yet tested |
 | 7 | Private messaging (realtime) | Not started |
 | 8 | Notifications | Not started |
 | 9 | XP, levels, leaderboard | Not started |
@@ -56,3 +56,10 @@ and follows are plain tables protected by Row Level Security. Counters on `posts
 maintained by database triggers, so the browser cannot fake them. Per-hour limits (300 likes, 30 comments, 100
 follows) are enforced in the database. You can only follow active accounts, never yourself, and never twice.
 Phase 8 (notifications) and phase 9 (XP) will hook into these same tables with triggers.
+
+## Discover (phase 6)
+People search is the `search_profiles()` database function: the text is passed as a parameter (never pasted into a
+query), wildcards are escaped, exact then prefix matches rank first, and trigram indexes keep it fast. Suggestions come
+from `suggested_accounts()` (active accounts you do not follow, most-followed first). Popular posts are the most-liked
+of the last 30 days. Known limits: suggestions count followers per row, which is fine for thousands of users but should
+become a stored counter later; private accounts (phase 11) will need to be excluded from search.
