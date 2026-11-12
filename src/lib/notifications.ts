@@ -5,12 +5,13 @@ export const NOTIFICATION_PAGE = 20;
 // Fired in the browser after notifications are read, so the bell updates straight away.
 export const NOTIFICATIONS_CHANGED = 'pulse:notifications-changed';
 
-export type NotificationType = 'follow' | 'like' | 'comment' | 'message';
+export type NotificationType = 'follow' | 'like' | 'comment' | 'message' | 'level_up';
 
 export type NotificationView = {
   id: string;
   type: NotificationType;
-  actor: { id: string; username: string; fullName: string; avatarUrl: string | null };
+  actor: { id: string; username: string; fullName: string; avatarUrl: string | null } | null;
+  level: number | null;
   postId: string | null;
   conversationId: string | null;
   preview: string | null;
@@ -28,19 +29,23 @@ type RawNotification = {
   preview: string | null;
   read_at: string | null;
   created_at: string;
-  actor_id: string;
+  actor_id: string | null;
+  level: number | null;
   actor: RawActor | RawActor[] | null;
 };
 
 const SELECT =
-  'id, type, post_id, conversation_id, preview, read_at, created_at, actor_id, actor:profiles!actor_id(username, full_name, avatar_url)';
+  'id, type, post_id, conversation_id, preview, level, read_at, created_at, actor_id, actor:profiles!actor_id(username, full_name, avatar_url)';
 
 function toView(r: RawNotification): NotificationView {
   const a = Array.isArray(r.actor) ? r.actor[0] : r.actor;
   return {
     id: r.id,
     type: r.type,
-    actor: { id: r.actor_id, username: a?.username ?? 'unknown', fullName: a?.full_name ?? 'Someone', avatarUrl: a?.avatar_url ?? null },
+    actor: r.actor_id
+      ? { id: r.actor_id, username: a?.username ?? 'unknown', fullName: a?.full_name ?? 'Someone', avatarUrl: a?.avatar_url ?? null }
+      : null,
+    level: r.level,
     postId: r.post_id,
     conversationId: r.conversation_id,
     preview: r.preview,
@@ -51,7 +56,8 @@ function toView(r: RawNotification): NotificationView {
 
 // Where tapping a notification goes.
 export function notificationHref(n: NotificationView): string {
-  if (n.type === 'follow') return `/u/${n.actor.username}`;
+  if (n.type === 'level_up') return '/xp';
+  if (n.type === 'follow' && n.actor) return `/u/${n.actor.username}`;
   if (n.type === 'message' && n.conversationId) return `/messages/${n.conversationId}`;
   if (n.postId) return `/p/${n.postId}`;
   return '/notifications';

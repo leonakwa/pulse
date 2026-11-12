@@ -22,6 +22,7 @@ const VERBS: Record<NotificationView['type'], string> = {
   like: 'liked your post',
   comment: 'commented on your post',
   message: 'sent you a message',
+  level_up: '',
 };
 
 export function NotificationList({ userId, initialItems, initialCursor }: Props) {
@@ -127,10 +128,24 @@ export function NotificationList({ userId, initialItems, initialCursor }: Props)
                 }}
                 className={`flex items-start gap-3 rounded-xl px-3 py-3 ${n.read ? 'hover:bg-surface' : 'bg-brand/10'}`}
               >
-                <Avatar name={n.actor.fullName} url={n.actor.avatarUrl} size={44} />
+                {n.actor ? (
+                  <Avatar name={n.actor.fullName} url={n.actor.avatarUrl} size={44} />
+                ) : (
+                  <span aria-hidden="true" className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand text-lg text-brand-fg">
+                    ★
+                  </span>
+                )}
                 <div className="min-w-0 flex-1">
                   <p className="text-[15px]">
-                    <span className="font-semibold">{n.actor.fullName}</span> {VERBS[n.type]}
+                    {n.type === 'level_up' ? (
+                      <span className="font-semibold">
+                        You reached Level {n.level}: {n.preview}
+                      </span>
+                    ) : (
+                      <>
+                        <span className="font-semibold">{n.actor?.fullName ?? 'Someone'}</span> {VERBS[n.type]}
+                      </>
+                    )}
                   </p>
                   {n.type === 'comment' && n.preview ? <p className="mt-0.5 line-clamp-2 text-sm text-muted">&ldquo;{n.preview}&rdquo;</p> : null}
                   <time dateTime={n.createdAt} suppressHydrationWarning className="mt-0.5 block text-xs text-muted">

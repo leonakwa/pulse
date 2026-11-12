@@ -28,8 +28,8 @@ sets `profiles.status`; the app shows "Account unavailable" and RLS hides the pr
 | 5 | Likes, comments, follows UI | Confirmed working |
 | 6 | Discover and search | Confirmed working |
 | 7 | Private messaging (realtime) | Confirmed working |
-| 8 | Notifications | Written, not yet tested |
-| 9 | XP, levels, leaderboard | Not started |
+| 8 | Notifications | Delivered |
+| 9 | XP, levels, leaderboard | Written, not yet tested |
 | 10 | Sharing | Not started |
 | 11 | Settings, themes, privacy policy | Not started |
 | 12 | Admin dashboard | Not started |
@@ -79,3 +79,14 @@ and remove the notification again when the action is undone (unlike, unfollow, d
 notifications are one per conversation until it is read. The bell in the header and the Notifications page update live
 through Realtime. Posts now have their own page (`/p/<id>`), which notifications link to and phase 10 sharing will reuse.
 Not built yet: grouping ("A and 5 others liked your post"), push notifications.
+
+## XP and levels (phase 9)
+XP is written only by database triggers (`xp_on_post/comment/like/follow`) through `award_xp()`. Rules and levels are data,
+not code: edit `xp_rules` (amount, daily cap) and `levels` (name, tagline, requirements); add rows to `levels` to grow
+from 10 to 15 or 20 levels. A level needs XP **and** posts **and** followers, and never goes down. Every award goes into
+the append-only `xp_transactions` ledger; `profiles.xp_total` is the running sum. Anti-farming: daily caps per action,
+one award per unique event (unique `dedupe_key`), no XP for your own content, 24-hour minimum account age for the
+account whose like/comment/follow pays someone else, comments need 10+ characters. Streaks use UTC days. The XP
+triggers swallow their own errors, so a bug in XP can never block posting, liking or following. The leaderboard has a
+rolling weekly board and an all-time board. Not built yet: retroactive XP for older posts, detection of coordinated
+like rings, admin tools to adjust XP (phase 12).

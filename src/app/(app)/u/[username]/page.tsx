@@ -6,6 +6,7 @@ import { getPostsPage } from '@/lib/posts';
 import { Avatar } from '@/components/Avatar';
 import { Feed } from '@/components/Feed';
 import { FollowButton } from '@/components/FollowButton';
+import { LevelBadge } from '@/components/LevelBadge';
 import { MessageButton } from '@/components/MessageButton';
 
 type Props = { params: Promise<{ username: string }> };
@@ -25,13 +26,14 @@ export default async function ProfilePage({ params }: Props) {
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('id, username, full_name, bio, location, avatar_url, cover_url, created_at')
+    .select('id, username, full_name, bio, location, avatar_url, cover_url, created_at, xp_total, level')
     .eq('username', username.toLowerCase())
     .maybeSingle();
 
   if (!profile) notFound();
 
   const isOwn = me.id === profile.id;
+  const { data: levelRow } = await supabase.from('levels').select('name').eq('level', profile.level).maybeSingle();
 
   const [followers, following, postCount, page, iFollow] = await Promise.all([
     supabase.from('follows').select('*', { count: 'exact', head: true }).eq('following_id', profile.id),
@@ -74,6 +76,15 @@ export default async function ProfilePage({ params }: Props) {
       <div className="mt-3 px-1">
         <h1 className="font-display text-2xl font-bold leading-tight">{profile.full_name}</h1>
         <p className="text-muted">@{profile.username}</p>
+        <div className="mt-2 flex items-center gap-2">
+          <LevelBadge level={Number(profile.level)} name={levelRow?.name} />
+          <span className="text-sm text-muted">{Number(profile.xp_total).toLocaleString('en')} XP</span>
+          {isOwn ? (
+            <Link href="/xp" className="text-sm font-semibold text-brand">
+              View progress
+            </Link>
+          ) : null}
+        </div>
         {profile.bio ? <p className="mt-3 whitespace-pre-line">{profile.bio}</p> : null}
         <p className="mt-3 text-sm text-muted">
           {profile.location ? `${profile.location} · ` : ''}Joined {joined}
