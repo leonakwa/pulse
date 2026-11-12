@@ -29,10 +29,10 @@ sets `profiles.status`; the app shows "Account unavailable" and RLS hides the pr
 | 6 | Discover and search | Confirmed working |
 | 7 | Private messaging (realtime) | Confirmed working |
 | 8 | Notifications | Delivered |
-| 9 | XP, levels, leaderboard | Written, not yet tested |
+| 9 | XP, levels, leaderboard | Confirmed working |
 | 10 | Sharing | Not started |
 | 11 | Settings, themes, privacy policy | Not started |
-| 12 | Admin dashboard | Not started |
+| 12 | Admin dashboard | Built early (before phase 10); not yet tested |
 
 Phone-number sign-in needs a paid SMS provider (for example Twilio), so email comes first.
 
@@ -90,3 +90,13 @@ account whose like/comment/follow pays someone else, comments need 10+ character
 triggers swallow their own errors, so a bug in XP can never block posting, liking or following. The leaderboard has a
 rolling weekly board and an all-time board. Not built yet: retroactive XP for older posts, detection of coordinated
 like rings, admin tools to adjust XP (phase 12).
+
+## Admin dashboard (built before phase 10)
+Lives at `/admin` with its own layout. Access is an allow-list: only people in `admin_users` (added by running SQL in
+Supabase, never from the app). Three layers: (1) every admin page and server action calls `requireAdmin()`, and anyone
+else gets a plain 404; (2) every `admin_*` database function calls `assert_admin()` itself, so calling it directly with
+a normal account fails; (3) the area is excluded from search engines. Suspending a user sets `profiles.status` and
+`auth.users.banned_until`, so they cannot sign in or use the app; admins cannot suspend themselves or other admins.
+Everything an admin changes is recorded in `admin_actions` with a reason. Passwords and hashes are never read or shown.
+Not built yet: a user-reporting queue (needs a "Report" button first), two-factor authentication for admin sign-in,
+a full login history (only the latest sign-in per user is shown), and deleting the stored image files of removed posts.
