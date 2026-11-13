@@ -55,13 +55,12 @@ type RawPost = {
   author_id: string;
   author: RawAuthor | RawAuthor[] | null;
   post_images: RawImages;
-  original: RawOriginal | RawOriginal[] | null;
 };
 
 const AUTHOR = 'author:profiles!author_id(username, full_name, avatar_url)';
 const SELECT =
-  `id, body, created_at, edited_at, like_count, comment_count, share_count, is_share, shared_post_id, author_id, ${AUTHOR}, post_images(storage_path, position), ` +
-  `original:posts!shared_post_id(id, body, created_at, share_count, author_id, ${AUTHOR}, post_images(storage_path, position))`;
+  `id, body, created_at, edited_at, like_count, comment_count, share_count, is_share, shared_post_id, author_id, ${AUTHOR}, post_images(storage_path, position)`;
+const ORIGINAL_SELECT = `id, body, created_at, share_count, author_id, ${AUTHOR}, post_images(storage_path, position)`;
 
 const one = <T>(v: T | T[] | null | undefined): T | null => (Array.isArray(v) ? (v[0] ?? null) : (v ?? null));
 
@@ -75,13 +74,19 @@ function authorOf(id: string, a: RawAuthor | null): Author {
   return { id, username: a?.username ?? 'unknown', fullName: a?.full_name ?? 'Unknown', avatarUrl: a?.avatar_url ?? null };
 }
 
-function targetIdOf(r: RawPost): string | null {
-  return r.is_share ? (one(r.original)?.id ?? null) : r.id;
+function targetIdOf(r: RawPost, originals: Map<string, RawOriginal>): string | null {
+  return r.is_share ? (originals.get(r.shared_post_id ?? '')?.id ?? null) : r.id;
 }
 
-function toPostView(supabase: SupabaseClient, r: RawPost, liked: Set<string>, shared: Set<string>): PostView {
+function toPostView(
+  supabase: SupabaseClient,
+  r: RawPost,
+  liked: Set<string>,
+  shared: Set<string>,
+  originals: Map<string, RawOriginal>,
+): PostView {
   const author = authorOf(r.author_id, one(r.author));
-  const orig = one(r.original);
+  const orig = r.is_share && r.shared_post_id ? (originals.get(r.shared_post_id) ?? null) : null;
   const origAuthor = orig ? authorOf(orig.author_id, one(orig.author)) : null;
 
   const sharedPost: SharedPostView | null =
@@ -132,13 +137,22 @@ async function getSharedIds(supabase: SupabaseClient, userId: string, targetIds:
   return new Set(((data ?? []) as { shared_post_id: string }[]).map((r) => r.shared_post_id));
 }
 
+// The original posts behind any shares, fetched in a second query (more reliable than a self-referencing embed).
+async function getOriginals(supabase: SupabaseClient, rows: RawPost[]): Promise<Map<string, RawOriginal>> {
+  const ids = [...new Set(rows.filter((r) => r.is_share && r.shared_post_id).map((r) => r.shared_post_id as string))];
+  if (ids.length === 0) return new Map();
+  const { data } = await supabase.from('posts').select(ORIGINAL_SELECT).in('id', ids);
+  return new Map(((data ?? []) as unknown as RawOriginal[]).map((o) => [o.id, o]));
+}
+
 async function toViews(supabase: SupabaseClient, viewerId: string, rows: RawPost[]): Promise<PostView[]> {
-  const targets = rows.map(targetIdOf).filter((x): x is string => Boolean(x));
+  const originals = await getOriginals(supabase, rows);
+  const targets = rows.map((r) => targetIdOf(r, originals)).filter((x): x is string => Boolean(x));
   const [liked, shared] = await Promise.all([
     getLikedIds(supabase, viewerId, rows.map((r) => r.id)),
     getSharedIds(supabase, viewerId, targets),
   ]);
-  return rows.map((r) => toPostView(supabase, r, liked, shared));
+  return rows.map((r) => toPostView(supabase, r, liked, shared, originals));
 }
 
 // Newest first, 10 at a time. The cursor is (created_at, id) so paging stays correct as new posts arrive.
