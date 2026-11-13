@@ -10,11 +10,14 @@ import { FormMessage, PasswordInput, SubmitButton } from '@/components/FormBits'
 
 function LoginForm() {
   const [state, formAction] = useActionState(signIn, initialFormState);
-  const linkError = useSearchParams().get('error') === 'link';
+  const params = useSearchParams();
+  const linkError = params.get('error') === 'link';
+  const deleted = params.get('deleted') === '1';
 
   return (
     <form action={formAction} className="space-y-4" noValidate>
       {linkError && !state.error ? <FormMessage state={{ error: 'That link is invalid or has expired. Try again.' }} /> : null}
+      {deleted ? <FormMessage state={{ success: 'Your account has been deleted.' }} /> : null}
       <FormMessage state={state} />
       <div>
         <label htmlFor="email" className="label">

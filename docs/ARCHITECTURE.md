@@ -30,8 +30,8 @@ sets `profiles.status`; the app shows "Account unavailable" and RLS hides the pr
 | 7 | Private messaging (realtime) | Confirmed working |
 | 8 | Notifications | Delivered |
 | 9 | XP, levels, leaderboard | Confirmed working |
-| 10 | Sharing | Written, not yet tested |
-| 11 | Settings, themes, privacy policy | Not started |
+| 10 | Sharing | Confirmed working |
+| 11 | Settings, themes, privacy policy | Written, not yet tested |
 | 12 | Admin dashboard | Built early (before phase 10); delivered |
 
 Phone-number sign-in needs a paid SMS provider (for example Twilio), so email comes first.
@@ -110,3 +110,16 @@ from accounts older than 24 hours); a share does not count as a new post for XP 
 "Copy link" and the phone's own share sheet ("Share via...", where the browser supports it) send a link to the ORIGINAL
 post at `/p/<id>`. Known limit: that page needs a Pulse sign-in, so people without an account see the login page;
 public preview pages (with social previews) can be added later.
+
+## Settings and privacy (phase 11)
+`/settings` holds appearance, notifications, privacy, account and sign out; `/privacy` is the public Privacy Policy.
+Theme is saved to `user_settings.theme` (so it follows you across devices) and cached in `localStorage`; a tiny inline
+script in `<head>` applies it before first paint. Every privacy control is enforced in the database: message permission
+(`start_conversation` and the message trigger), discoverability (`search_profiles`, `suggested_accounts`) and leaderboard
+visibility (leaderboard functions). Notification toggles feed the existing triggers. Settings are changed through one
+allow-listed server action. Account: email change (confirmation email), password change (re-checks the current
+password), data export (`/settings/export`, your own rows only) and account deletion (`delete_my_account()` removes the
+sign-in, which cascades to everything you created; admins are protected). Not built yet: private accounts with follower
+approval, blocking and muting people, two-factor sign-in. The privacy policy is a plain-language draft: confirm the
+minimum age and contact details for your country and have it reviewed before launch. Optional env var
+`NEXT_PUBLIC_CONTACT_EMAIL` shows a contact address on the policy page.

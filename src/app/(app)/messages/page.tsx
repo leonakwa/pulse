@@ -33,6 +33,12 @@ export default async function MessagesPage({ searchParams }: Props) {
         </p>
       ) : null}
 
+      {error === 'blocked' ? (
+        <p role="alert" className="mt-4 rounded-xl border border-danger/40 bg-danger/10 px-4 py-3 text-sm text-danger">
+          This person is not accepting messages from you.
+        </p>
+      ) : null}
+
       <InboxList initial={inbox} currentUserId={me.id} />
     </div>
   );

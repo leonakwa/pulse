@@ -46,7 +46,14 @@ export default function RegisterPage() {
         <PasswordInput name="password" label="Password" autoComplete="new-password" placeholder="At least 8 characters" />
         <SubmitButton pendingText="Creating account...">Create account</SubmitButton>
       </form>
-      <p className="mt-8 text-center text-sm text-muted">
+      <p className="mt-6 text-center text-xs text-muted">
+        By creating an account you agree to the{' '}
+        <Link href="/privacy" className="font-semibold text-brand">
+          Privacy Policy
+        </Link>
+        .
+      </p>
+      <p className="mt-4 text-center text-sm text-muted">
         Already have an account?{' '}
         <Link href="/login" className="font-semibold text-brand">
           Sign in

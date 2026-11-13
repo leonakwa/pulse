@@ -20,6 +20,7 @@ export async function startConversation(formData: FormData) {
   if (!user) redirect('/login');
 
   const { data, error } = await supabase.rpc('start_conversation', { p_other: userId });
+  if (error?.message?.includes('messages_not_allowed')) redirect('/messages?error=blocked');
   if (error || typeof data !== 'string') redirect('/messages?error=start');
   redirect(`/messages/${data}`);
 }
@@ -43,6 +44,7 @@ export async function sendMessage(conversationId: string, body: string): Promise
 
   const row = ((data ?? []) as unknown as RawMessage[])[0];
   if (error || !row) {
+    if (error?.message?.includes('messages_not_allowed')) return { error: 'This person is not accepting messages from you.' };
     if (error?.message?.includes('rate_limited')) return { error: 'You are sending messages too fast. Wait a moment.' };
     if (error?.code === '42501') return { error: 'You cannot send messages in this conversation.' };
     return { error: 'Your message was not sent. Please try again.' };
