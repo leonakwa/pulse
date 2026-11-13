@@ -24,6 +24,8 @@ export default async function NotificationSettingsPage() {
     .eq('user_id', user!.id)
     .maybeSingle();
 
+  const values = (s ?? {}) as Record<string, boolean | null | undefined>;
+
   return (
     <div>
       <Link href="/settings" className="text-sm font-medium text-muted hover:text-fg">
@@ -33,7 +35,7 @@ export default async function NotificationSettingsPage() {
       <p className="mt-1 text-sm text-muted">Changes save straight away. Level-up messages are always on.</p>
       <div className="mt-4 divide-y divide-line">
         {ROWS.map((r) => (
-          <ToggleRow key={r.key} settingKey={r.key} label={r.label} description={r.description} initial={s ? s[r.key] !== false : true} />
+          <ToggleRow key={r.key} settingKey={r.key} label={r.label} description={r.description} initial={values[r.key] !== false} />
         ))}
       </div>
     </div>
