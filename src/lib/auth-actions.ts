@@ -3,11 +3,11 @@
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import type { FormState } from '@/lib/form-state';
+import { getSiteUrl } from '@/lib/site-url';
 
 const USERNAME_RE = /^[a-z0-9_]{3,20}$/;
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const siteUrl = () => (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/$/, '');
 const text = (formData: FormData, key: string) => String(formData.get(key) ?? '');
 
 function passwordProblem(password: string): string | null {
@@ -43,7 +43,7 @@ export async function signUp(_prev: FormState, formData: FormData): Promise<Form
     password,
     options: {
       data: { username, full_name: fullName },
-      emailRedirectTo: `${siteUrl()}/auth/callback?next=/feed`,
+      emailRedirectTo: `${await getSiteUrl()}/auth/callback?next=/feed`,
     },
   });
   if (error) return { error: error.message };
@@ -54,7 +54,7 @@ export async function signUp(_prev: FormState, formData: FormData): Promise<Form
   }
 
   if (data.session) redirect('/feed');
-  return { success: 'Account created. Check your email to confirm it, then sign in.' };
+  return { success: 'Account created. Check your email (and your spam folder) for a confirmation link, then sign in. Did not get it? Use "Resend confirmation email" on the sign-in page.' };
 }
 
 export async function signIn(_prev: FormState, formData: FormData): Promise<FormState> {
@@ -79,7 +79,7 @@ export async function requestPasswordReset(_prev: FormState, formData: FormData)
   if (!EMAIL_RE.test(email)) return { error: 'Enter a valid email address.' };
 
   const supabase = await createClient();
-  await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${siteUrl()}/auth/callback?next=/reset-password` });
+  await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${await getSiteUrl()}/auth/callback?next=/reset-password` });
 
   // Same response either way, so the form cannot be used to find registered emails.
   return { success: 'If an account exists for that email, a reset link is on its way.' };
@@ -106,4 +106,23 @@ export async function signOut() {
   const supabase = await createClient();
   await supabase.auth.signOut();
   redirect('/login');
+}
+
+// For people who never received (or lost) their confirmation email.
+export async function resendConfirmation(_prev: FormState, formData: FormData): Promise<FormState> {
+  const email = text(formData, 'email').trim().toLowerCase();
+  if (!EMAIL_RE.test(email)) return { error: 'Enter a valid email address.' };
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resend({
+    type: 'signup',
+    email,
+    options: { emailRedirectTo: `${await getSiteUrl()}/auth/callback?next=/feed` },
+  });
+  if (error && /rate|limit|seconds|too many/i.test(error.message)) {
+    return { error: 'Too many emails were requested. Please wait a few minutes and try again.' };
+  }
+
+  // Same message either way, so this cannot be used to find out who has an account.
+  return { success: 'If that address has an account waiting for confirmation, we sent a new link. Check your inbox and spam folder.' };
 }

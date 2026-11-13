@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import type { FormState } from '@/lib/form-state';
+import { getSiteUrl } from '@/lib/site-url';
 
 const BOOLEAN_KEYS = [
   'notify_follows', 'notify_likes', 'notify_comments', 'notify_shares', 'notify_messages',
@@ -13,7 +14,6 @@ const THEMES = ['light', 'dark', 'system'];
 const MESSAGE_PERMISSIONS = ['everyone', 'following', 'nobody'];
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-const siteUrl = () => (process.env.NEXT_PUBLIC_SITE_URL ?? 'http://localhost:3000').replace(/\/$/, '');
 const text = (formData: FormData, key: string) => String(formData.get(key) ?? '');
 
 // One setting at a time, from a fixed allow-list. Row Level Security limits this to your own settings row.
@@ -73,7 +73,7 @@ export async function changeEmail(_prev: FormState, formData: FormData): Promise
   if (!user) return { error: 'Please sign in again.' };
   if (email === user.email?.toLowerCase()) return { error: 'That is already your email address.' };
 
-  const { error } = await supabase.auth.updateUser({ email }, { emailRedirectTo: `${siteUrl()}/auth/callback?next=/settings/account` });
+  const { error } = await supabase.auth.updateUser({ email }, { emailRedirectTo: `${await getSiteUrl()}/auth/callback?next=/settings/account` });
   if (error) return { error: error.message };
   return { success: 'Check your inbox: we sent a confirmation link. Your email changes once you confirm it (you may need to confirm from your old address too).' };
 }

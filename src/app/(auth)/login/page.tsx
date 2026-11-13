@@ -48,6 +48,12 @@ export default function LoginPage() {
           Create an account
         </Link>
       </p>
+      <p className="mt-3 text-center text-sm text-muted">
+        Did not get your confirmation email?{' '}
+        <Link href="/auth/resend" className="font-semibold text-brand">
+          Resend it
+        </Link>
+      </p>
     </AuthLayout>
   );
 }
