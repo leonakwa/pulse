@@ -30,9 +30,9 @@ sets `profiles.status`; the app shows "Account unavailable" and RLS hides the pr
 | 7 | Private messaging (realtime) | Confirmed working |
 | 8 | Notifications | Delivered |
 | 9 | XP, levels, leaderboard | Confirmed working |
-| 10 | Sharing | Not started |
+| 10 | Sharing | Written, not yet tested |
 | 11 | Settings, themes, privacy policy | Not started |
-| 12 | Admin dashboard | Built early (before phase 10); not yet tested |
+| 12 | Admin dashboard | Built early (before phase 10); delivered |
 
 Phone-number sign-in needs a paid SMS provider (for example Twilio), so email comes first.
 
@@ -100,3 +100,13 @@ a normal account fails; (3) the area is excluded from search engines. Suspending
 Everything an admin changes is recorded in `admin_actions` with a reason. Passwords and hashes are never read or shown.
 Not built yet: a user-reporting queue (needs a "Report" button first), two-factor authentication for admin sign-in,
 a full login history (only the latest sign-in per user is shown), and deleting the stored image files of removed posts.
+
+## Sharing (phase 10)
+A share is a row in `posts` with `is_share = true` and `shared_post_id` pointing at the original, so it can always be
+traced back and the original author is credited. Created only through `share_post()`: you cannot share your own post,
+can share each original once, and sharing a share shares the original. If the original is deleted the share shows "no
+longer available". Share counts are kept by a trigger. The original author gets a notification and XP (`post_shared`,
+from accounts older than 24 hours); a share does not count as a new post for XP or level requirements. Outside the app,
+"Copy link" and the phone's own share sheet ("Share via...", where the browser supports it) send a link to the ORIGINAL
+post at `/p/<id>`. Known limit: that page needs a Pulse sign-in, so people without an account see the login page;
+public preview pages (with social previews) can be added later.

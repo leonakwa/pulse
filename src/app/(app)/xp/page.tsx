@@ -52,7 +52,7 @@ export default async function XpPage({ searchParams }: Props) {
     supabase.from('levels').select('level, name, tagline, min_xp, min_posts, min_followers').order('level'),
     supabase.from('xp_rules').select('reason, amount, daily_cap, label, earn_text').order('sort_order'),
     supabase.from('user_streaks').select('current_streak, longest_streak').eq('user_id', me.id).maybeSingle(),
-    supabase.from('posts').select('*', { count: 'exact', head: true }).eq('author_id', me.id),
+    supabase.from('posts').select('*', { count: 'exact', head: true }).eq('author_id', me.id).eq('is_share', false),
     supabase.from('follows').select('*', { count: 'exact', head: true }).eq('following_id', me.id),
     supabase.from('xp_transactions').select('reason, amount').gte('created_at', dayStart.toISOString()),
     supabase

@@ -13,6 +13,7 @@ export type AdminPost = {
   comment_count: number;
   created_at: string;
   image_paths: string[];
+  is_share?: boolean;
 };
 
 export function AdminPostItem({ post, images, returnTo }: { post: AdminPost; images: string[]; returnTo: string }) {
@@ -24,7 +25,7 @@ export function AdminPostItem({ post, images, returnTo }: { post: AdminPost; ima
         </Link>{' '}
         <span className="text-muted">@{post.username} · {fmtDateTime(post.created_at)}</span>
       </p>
-      {post.body ? <p className="mt-2 whitespace-pre-line break-words">{post.body}</p> : <p className="mt-2 text-sm italic text-muted">(photo only)</p>}
+      {post.body ? <p className="mt-2 whitespace-pre-line break-words">{post.body}</p> : <p className="mt-2 text-sm italic text-muted">{post.is_share ? '(shared another post)' : '(photo only)'}</p>}
       {images.length > 0 ? (
         <div className="mt-3 grid grid-cols-4 gap-1 overflow-hidden rounded-xl">
           {images.map((src) => (

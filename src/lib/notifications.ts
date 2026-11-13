@@ -5,7 +5,7 @@ export const NOTIFICATION_PAGE = 20;
 // Fired in the browser after notifications are read, so the bell updates straight away.
 export const NOTIFICATIONS_CHANGED = 'pulse:notifications-changed';
 
-export type NotificationType = 'follow' | 'like' | 'comment' | 'message' | 'level_up';
+export type NotificationType = 'follow' | 'like' | 'comment' | 'message' | 'level_up' | 'share';
 
 export type NotificationView = {
   id: string;

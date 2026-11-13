@@ -22,6 +22,7 @@ const VERBS: Record<NotificationView['type'], string> = {
   like: 'liked your post',
   comment: 'commented on your post',
   message: 'sent you a message',
+  share: 'shared your post',
   level_up: '',
 };
 
