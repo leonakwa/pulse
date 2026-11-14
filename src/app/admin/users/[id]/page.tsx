@@ -88,7 +88,7 @@ export default async function AdminUserPage({ params, searchParams }: Props) {
             </label>
             <textarea id="reason" name="reason" required minLength={3} maxLength={300} rows={2} className="input resize-none" />
             <div className="flex flex-wrap gap-2">
-              <ConfirmButton name="status" value="suspended" message="Suspend this account? They will be signed out of Pulse and blocked until you reactivate them." className="rounded-full border border-danger/50 px-5 py-2 text-sm font-semibold text-danger hover:bg-danger/10">
+              <ConfirmButton name="status" value="suspended" message="Suspend this account? They will be signed out of PulseHive and blocked until you reactivate them." className="rounded-full border border-danger/50 px-5 py-2 text-sm font-semibold text-danger hover:bg-danger/10">
                 Suspend
               </ConfirmButton>
               <ConfirmButton name="status" value="deactivated" message="Deactivate this account? They will be blocked until you reactivate them." className="rounded-full border border-line px-5 py-2 text-sm font-semibold hover:border-danger hover:text-danger">

@@ -122,7 +122,7 @@ export default async function XpPage({ searchParams }: Props) {
             </div>
           </>
         ) : (
-          <p className="mt-1 text-sm text-muted">You are a Legend: the pulse of Pulse. More levels may be added later.</p>
+          <p className="mt-1 text-sm text-muted">You are a Legend: the pulse of PulseHive. More levels may be added later.</p>
         )}
       </section>
 

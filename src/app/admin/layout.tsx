@@ -4,7 +4,7 @@ import { requireAdmin } from '@/lib/admin';
 import { Wordmark } from '@/components/Wordmark';
 import { AdminNav } from '@/components/admin/AdminNav';
 
-export const metadata: Metadata = { title: { default: 'Admin', template: '%s | Pulse Admin' }, robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: { default: 'Admin', template: '%s | PulseHive Admin' }, robots: { index: false, follow: false } };
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   await requireAdmin();

@@ -12,7 +12,7 @@ const LINKS = [
   { href: '/settings/notifications', label: 'Notifications', hint: 'Choose what you get notified about' },
   { href: '/settings/privacy', label: 'Privacy', hint: 'Messages, search, leaderboard and your data' },
   { href: '/settings/account', label: 'Account', hint: 'Email, password and deleting your account' },
-  { href: '/privacy', label: 'Privacy Policy', hint: 'How Pulse collects, stores and protects your information' },
+  { href: '/privacy', label: 'Privacy Policy', hint: 'How PulseHive collects, stores and protects your information' },
 ];
 
 export default async function SettingsPage() {

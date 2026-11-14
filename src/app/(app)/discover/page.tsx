@@ -81,7 +81,7 @@ export default async function DiscoverPage({ searchParams }: Props) {
             {suggestions.length === 0 ? (
               <div className="mt-3 rounded-2xl border border-dashed border-line px-4 py-8 text-center">
                 <p className="font-semibold">No suggestions right now</p>
-                <p className="mt-1 text-sm text-muted">When more people join Pulse, you will see them here.</p>
+                <p className="mt-1 text-sm text-muted">When more people join PulseHive, you will see them here.</p>
               </div>
             ) : (
               <ul className="divide-y divide-line">

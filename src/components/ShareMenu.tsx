@@ -62,7 +62,7 @@ export function ShareMenu({ post, sharedByMe, currentUserId, onChanged }: Props)
     setError(null);
     try {
       await navigator.share({
-        title: `${target?.authorName ?? post.author.fullName} on Pulse`,
+        title: `${target?.authorName ?? post.author.fullName} on PulseHive`,
         text: (target?.body ?? post.body).slice(0, 120),
         url: link(),
       });

@@ -24,7 +24,7 @@ export async function GET() {
 
   const body = {
     exportedAt: new Date().toISOString(),
-    note: 'This file contains the information you created on Pulse. Messages are limited to the ones you sent.',
+    note: 'This file contains the information you created on PulseHive. Messages are limited to the ones you sent.',
     account: { email: user.email, createdAt: user.created_at },
     profile: profile.data,
     settings: settings.data,
@@ -40,7 +40,7 @@ export async function GET() {
   return new Response(JSON.stringify(body, null, 2), {
     headers: {
       'Content-Type': 'application/json; charset=utf-8',
-      'Content-Disposition': 'attachment; filename="pulse-data.json"',
+      'Content-Disposition': 'attachment; filename="pulsehive-data.json"',
       'Cache-Control': 'no-store',
     },
   });

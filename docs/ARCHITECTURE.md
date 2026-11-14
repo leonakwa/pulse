@@ -1,4 +1,4 @@
-# Pulse architecture
+# PulseHive architecture
 
 **Stack:** Next.js (App Router) + TypeScript + Tailwind on Vercel; Supabase (Postgres, Auth, Storage, Realtime).
 Mobile app later: Expo / React Native against the same Supabase backend.
@@ -8,7 +8,7 @@ Mobile app later: Expo / React Native against the same Supabase backend.
 2. Authorization is enforced by Row Level Security and database functions, never by hiding UI.
 3. XP is awarded only by database triggers/functions reacting to real events. Clients cannot write XP.
 4. A post with an image is created only after the upload succeeds (no half-saved posts).
-5. Passwords are handled only by Supabase Auth and are never stored, queried or logged by Pulse.
+5. Passwords are handled only by Supabase Auth and are never stored, queried or logged by PulseHive.
 
 ## XP design (phase 9)
 Append-only `xp_transactions` ledger; total XP cached on the profile by trigger. Anti-farming in SQL: no XP for
@@ -108,7 +108,7 @@ can share each original once, and sharing a share shares the original. If the or
 longer available". Share counts are kept by a trigger. The original author gets a notification and XP (`post_shared`,
 from accounts older than 24 hours); a share does not count as a new post for XP or level requirements. Outside the app,
 "Copy link" and the phone's own share sheet ("Share via...", where the browser supports it) send a link to the ORIGINAL
-post at `/p/<id>`. Known limit: that page needs a Pulse sign-in, so people without an account see the login page;
+post at `/p/<id>`. Known limit: that page needs a PulseHive sign-in, so people without an account see the login page;
 public preview pages (with social previews) can be added later.
 
 ## Settings and privacy (phase 11)

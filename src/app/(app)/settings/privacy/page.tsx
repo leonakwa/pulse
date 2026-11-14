@@ -7,7 +7,7 @@ import { ToggleRow } from '@/components/settings/ToggleRow';
 export const metadata: Metadata = { title: 'Privacy settings' };
 
 const MESSAGE_OPTIONS = [
-  { value: 'everyone', label: 'Everyone', hint: 'Anyone on Pulse can message you' },
+  { value: 'everyone', label: 'Everyone', hint: 'Anyone on PulseHive can message you' },
   { value: 'following', label: 'People I follow', hint: 'Only people you follow can message you' },
   { value: 'nobody', label: 'No one', hint: 'Nobody can start or continue a chat with you' },
 ];
@@ -29,7 +29,7 @@ export default async function PrivacySettingsPage() {
         ← Settings
       </Link>
       <h1 className="mt-4 font-display text-2xl font-bold">Privacy</h1>
-      <p className="mt-1 text-sm text-muted">Changes save straight away and are enforced by Pulse's database.</p>
+      <p className="mt-1 text-sm text-muted">Changes save straight away and are enforced by PulseHive's database.</p>
 
       <div className="mt-4 divide-y divide-line">
         <ChoiceGroup settingKey="message_permission" legend="Who can message me" options={MESSAGE_OPTIONS} initial={s?.message_permission ?? 'everyone'} />
@@ -56,7 +56,7 @@ export default async function PrivacySettingsPage() {
           Download my data
         </a>
         <p className="mt-4 text-sm text-muted">
-          Posts on Pulse are visible to signed-in members. Private accounts with follower approval are not available yet.
+          Posts on PulseHive are visible to signed-in members. Private accounts with follower approval are not available yet.
         </p>
       </section>
 

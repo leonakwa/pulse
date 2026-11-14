@@ -30,14 +30,14 @@ export default function PrivacyPolicyPage() {
       <div className="flex items-center justify-between">
         <Wordmark className="!text-2xl" />
         <Link href="/" className="btn-ghost">
-          Back to Pulse
+          Back to PulseHive
         </Link>
       </div>
 
       <h1 className="mt-8 font-display text-3xl font-extrabold tracking-tight">Privacy Policy</h1>
       <p className="mt-1 text-sm text-muted">Last updated: {UPDATED}</p>
       <p className="mt-4 leading-relaxed">
-        This page explains, in plain language, what information Pulse collects, how it is stored and used, who can see it, how it is
+        This page explains, in plain language, what information PulseHive collects, how it is stored and used, who can see it, how it is
         protected, and the choices you have.
       </p>
 
@@ -52,7 +52,7 @@ export default function PrivacyPolicyPage() {
             'Your settings and preferences, such as theme, notification choices and privacy choices.',
           ]}
         />
-        <p>Information created as you use Pulse:</p>
+        <p>Information created as you use PulseHive:</p>
         <List
           items={[
             'Activity records: when you last signed in, which days you were active (for streaks), and your XP, level and XP history.',
@@ -66,9 +66,9 @@ export default function PrivacyPolicyPage() {
       <Section title="2. How we use it">
         <List
           items={[
-            'To run Pulse: show your profile and posts, deliver messages, count likes and comments, and send notifications.',
+            'To run PulseHive: show your profile and posts, deliver messages, count likes and comments, and send notifications.',
             'To run XP, levels, streaks and leaderboards, which are calculated automatically from real activity.',
-            'To keep Pulse safe: preventing spam and abuse, limiting how fast actions can be repeated, and investigating problems.',
+            'To keep PulseHive safe: preventing spam and abuse, limiting how fast actions can be repeated, and investigating problems.',
             'To moderate: administrators can review accounts and posts and suspend accounts that break the rules.',
           ]}
         />
@@ -77,17 +77,17 @@ export default function PrivacyPolicyPage() {
       <Section title="3. Who can see what">
         <List
           items={[
-            'Your profile, posts, comments, likes, level and XP can be seen by other signed-in members of Pulse. They are not shown to the public web.',
+            'Your profile, posts, comments, likes, level and XP can be seen by other signed-in members of PulseHive. They are not shown to the public web.',
             'Your private messages can be read only by you and the person you are chatting with. They are not end-to-end encrypted.',
-            'Your email address can be seen only by you and Pulse administrators.',
-            'Pulse administrators can see account details (such as email, join date and last sign-in), posts, and moderation history. The admin dashboard does not display message contents, passwords or password hashes. Technical administrators of our database and hosting providers can access stored data as needed to run the service.',
+            'Your email address can be seen only by you and PulseHive administrators.',
+            'PulseHive administrators can see account details (such as email, join date and last sign-in), posts, and moderation history. The admin dashboard does not display message contents, passwords or password hashes. Technical administrators of our database and hosting providers can access stored data as needed to run the service.',
           ]}
         />
       </Section>
 
       <Section title="4. Where it is stored">
         <p>
-          Pulse uses trusted service providers to operate: a database, sign-in and file-storage provider (Supabase) and a hosting
+          PulseHive uses trusted service providers to operate: a database, sign-in and file-storage provider (Supabase) and a hosting
           provider (Vercel). Your information is processed and stored on their systems, which may be in other countries.
         </p>
       </Section>
@@ -125,7 +125,7 @@ export default function PrivacyPolicyPage() {
       </Section>
 
       <Section title="8. Age">
-        <p>Pulse is for people aged 13 and over. If you believe a younger child has created an account, please contact us so we can remove it.</p>
+        <p>PulseHive is for people aged 13 and over. If you believe a younger child has created an account, please contact us so we can remove it.</p>
       </Section>
 
       <Section title="9. Changes to this policy">
@@ -139,7 +139,7 @@ export default function PrivacyPolicyPage() {
               Questions or requests about your information: <a href={`mailto:${CONTACT}`} className="font-semibold text-brand">{CONTACT}</a>.
             </>
           ) : (
-            'Questions or requests about your information can be sent to the Pulse team through the app.'
+            'Questions or requests about your information can be sent to the PulseHive team through the app.'
           )}
         </p>
       </Section>

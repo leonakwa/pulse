@@ -22,13 +22,13 @@ export default async function AccountSettingsPage() {
 
       <section>
         <h2 className="font-display text-lg font-bold">Email</h2>
-        <p className="mb-3 mt-1 text-sm text-muted">Only you and Pulse administrators can see your email address.</p>
+        <p className="mb-3 mt-1 text-sm text-muted">Only you and PulseHive administrators can see your email address.</p>
         <ChangeEmailForm currentEmail={user?.email ?? ''} />
       </section>
 
       <section>
         <h2 className="font-display text-lg font-bold">Password</h2>
-        <p className="mb-3 mt-1 text-sm text-muted">Pulse never stores or shows your password.</p>
+        <p className="mb-3 mt-1 text-sm text-muted">PulseHive never stores or shows your password.</p>
         <ChangePasswordForm />
       </section>
 

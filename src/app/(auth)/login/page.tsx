@@ -43,7 +43,7 @@ export default function LoginPage() {
         <LoginForm />
       </Suspense>
       <p className="mt-8 text-center text-sm text-muted">
-        New to Pulse?{' '}
+        New to PulseHive?{' '}
         <Link href="/register" className="font-semibold text-brand">
           Create an account
         </Link>

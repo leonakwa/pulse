@@ -1,4 +1,4 @@
-# Pulse
+# PulseHive
 
 An activity-driven social network: profiles, posts, follows, private messages, notifications, and XP with a leaderboard.
 Web first (Next.js + Supabase), then an app. Design and roadmap: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).

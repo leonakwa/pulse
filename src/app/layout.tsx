@@ -7,7 +7,7 @@ const display = Bricolage_Grotesque({ subsets: ['latin'], variable: '--font-disp
 const body = DM_Sans({ subsets: ['latin'], variable: '--font-body', display: 'swap' });
 
 export const metadata: Metadata = {
-  title: { default: 'Pulse', template: '%s | Pulse' },
+  title: { default: 'PulseHive', template: '%s | PulseHive' },
   description: 'Share moments, connect with people and earn XP for genuine participation.',
 };
 

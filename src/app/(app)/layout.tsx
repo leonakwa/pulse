@@ -37,7 +37,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     <div className="mx-auto min-h-dvh w-full max-w-2xl">
       <ThemeSync theme={settingsRow?.theme ?? 'system'} />
       <header className="sticky top-0 z-10 flex items-center justify-between border-b border-line bg-bg/90 px-4 py-3 backdrop-blur">
-        <Wordmark className="!text-2xl" />
+        <Wordmark className="!text-xl" />
         <div className="flex items-center gap-1">
           {isAdmin === true ? (
             <Link href="/admin" className="rounded-lg px-2 py-2 text-sm font-semibold text-danger">

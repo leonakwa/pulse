@@ -11,7 +11,7 @@ export default function RegisterPage() {
   const [state, formAction] = useActionState(signUp, initialFormState);
 
   return (
-    <AuthLayout title="Create your account" subtitle="Join Pulse and start earning XP.">
+    <AuthLayout title="Create your account" subtitle="Join PulseHive and start earning XP.">
       <form action={formAction} className="space-y-4" noValidate>
         <FormMessage state={state} />
         <div>
