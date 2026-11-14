@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Avatar } from '@/components/Avatar';
+import { ReportButton } from '@/components/ReportButton';
 import { addComment, deleteComment, loadComments } from '@/lib/engagement-actions';
 import { timeAgo } from '@/lib/time';
 import type { CommentView } from '@/lib/comments';
@@ -83,7 +84,11 @@ export function Comments({ postId, currentUserId, onCount }: Props) {
               <button type="button" onClick={() => remove(c.id)} className="mt-0.5 text-xs font-medium text-muted hover:text-danger">
                 Delete
               </button>
-            ) : null}
+            ) : (
+              <div className="mt-0.5 flex flex-wrap text-xs">
+                <ReportButton type="comment" targetId={c.id} className="font-medium text-muted hover:text-danger" />
+              </div>
+            )}
           </div>
         </div>
       ))}

@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Avatar } from '@/components/Avatar';
 import { Comments } from '@/components/Comments';
 import { EmbeddedPost } from '@/components/EmbeddedPost';
+import { ReportButton } from '@/components/ReportButton';
 import { ShareMenu } from '@/components/ShareMenu';
 import { toggleLike } from '@/lib/engagement-actions';
 import { deletePost, updatePost } from '@/lib/post-actions';
@@ -190,6 +191,7 @@ export function PostCard({ post, isOwn, currentUserId, onDeleted, onUpdated, onS
               </svg>
               {shareCount}
             </button>
+            {!isOwn ? <ReportButton type="post" targetId={post.id} /> : null}
             {isOwn && !editing ? (
               <>
                 <button type="button" onClick={() => setEditing(true)} disabled={busy} className="py-1 text-muted hover:text-fg">

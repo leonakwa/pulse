@@ -15,6 +15,9 @@ const ACTION_TEXT: Record<string, string> = {
   deactivate_user: 'deactivated',
   reactivate_user: 'reactivated',
   delete_post: 'deleted a post by',
+  delete_comment: 'deleted a comment by',
+  dismiss_report: 'dismissed a report about',
+  resolve_report: 'resolved a report about',
 };
 
 export default async function AdminActivityPage() {

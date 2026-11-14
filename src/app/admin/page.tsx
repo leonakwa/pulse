@@ -19,7 +19,11 @@ function Stat({ label, value, sub }: { label: string; value: number | string; su
 
 export default async function AdminOverviewPage() {
   const { supabase } = await requireAdmin();
-  const [overviewRes, daysRes] = await Promise.all([supabase.rpc('admin_overview'), supabase.rpc('admin_daily_stats', { p_days: 14 })]);
+  const [overviewRes, daysRes, reportsRes] = await Promise.all([
+    supabase.rpc('admin_overview'),
+    supabase.rpc('admin_daily_stats', { p_days: 14 }),
+    supabase.rpc('admin_open_report_count'),
+  ]);
 
   const o = ((overviewRes.data ?? []) as Overview[])[0];
   const days = (daysRes.data ?? []) as Day[];
@@ -37,6 +41,7 @@ export default async function AdminOverviewPage() {
           <Stat label="Registered users" value={o.total_users} sub={`+${num(o.new_users_24h)} today · +${num(o.new_users_7d)} this week`} />
           <Stat label="Active in last 7 days" value={o.active_users_7d} />
           <Stat label="Suspended or deactivated" value={o.suspended_users} />
+          <Stat label="Open reports" value={Number(reportsRes.data ?? 0)} />
           <Stat label="Posts" value={o.total_posts} sub={`+${num(o.posts_24h)} in 24 hours`} />
           <Stat label="Comments" value={o.total_comments} />
           <Stat label="Likes" value={o.total_likes} />

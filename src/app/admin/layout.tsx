@@ -7,7 +7,8 @@ import { AdminNav } from '@/components/admin/AdminNav';
 export const metadata: Metadata = { title: { default: 'Admin', template: '%s | PulseHive Admin' }, robots: { index: false, follow: false } };
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  await requireAdmin();
+  const { supabase } = await requireAdmin();
+  const { data: openReports } = await supabase.rpc('admin_open_report_count');
 
   return (
     <div className="mx-auto min-h-dvh w-full max-w-5xl">
@@ -21,7 +22,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             Back to app
           </Link>
         </div>
-        <AdminNav />
+        <AdminNav openReports={Number(openReports ?? 0)} />
       </header>
       <main className="p-4 pb-16">{children}</main>
     </div>

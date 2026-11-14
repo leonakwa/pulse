@@ -8,6 +8,7 @@ import { Feed } from '@/components/Feed';
 import { FollowButton } from '@/components/FollowButton';
 import { LevelBadge } from '@/components/LevelBadge';
 import { MessageButton } from '@/components/MessageButton';
+import { ReportButton } from '@/components/ReportButton';
 
 type Props = { params: Promise<{ username: string }> };
 
@@ -89,6 +90,12 @@ export default async function ProfilePage({ params }: Props) {
         <p className="mt-3 text-sm text-muted">
           {profile.location ? `${profile.location} · ` : ''}Joined {joined}
         </p>
+
+        {!isOwn ? (
+          <div className="mt-3 flex flex-wrap text-sm">
+            <ReportButton type="user" targetId={profile.id} label="Report this account" className="text-muted hover:text-danger" />
+          </div>
+        ) : null}
 
         <dl className="mt-4 flex gap-6">
           <div>

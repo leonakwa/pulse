@@ -8,7 +8,7 @@ select check_name, result from (
   from pg_tables where schemaname = 'public' and not rowsecurity
 
   union all
-  select 2, 'Tables with security on but no rules (expect only: admin_actions, admin_users)',
+  select 2, 'Tables with security on but no rules (expect only: admin_actions, admin_users, reports)',
          coalesce(string_agg(c.relname, ', ' order by c.relname), 'none')
   from pg_class c join pg_namespace ns on ns.oid = c.relnamespace
   where ns.nspname = 'public' and c.relkind = 'r' and c.relrowsecurity
@@ -27,17 +27,17 @@ select check_name, result from (
   where ns.nspname = 'public' and p.prorettype <> 'trigger'::regtype and has_function_privilege('authenticated', p.oid, 'execute')
 
   union all
-  select 5, 'Tables signed-in users may INSERT into directly (expect: follows, messages, post_comments, post_likes)',
+  select 5, 'Tables where signed-in users may add rows themselves (expect: follows, messages, post_comments, post_likes)',
          coalesce(string_agg(distinct tablename, ', ' order by tablename), 'none')
   from pg_policies where schemaname = 'public' and cmd = 'INSERT'
 
   union all
-  select 6, 'Tables signed-in users may UPDATE directly (expect: posts, profiles, user_settings)',
+  select 6, 'Tables where signed-in users may edit rows themselves (expect: posts, profiles, user_settings)',
          coalesce(string_agg(distinct tablename, ', ' order by tablename), 'none')
   from pg_policies where schemaname = 'public' and cmd = 'UPDATE'
 
   union all
-  select 7, 'Tables signed-in users may DELETE from directly (expect: follows, post_comments, post_likes, posts)',
+  select 7, 'Tables where signed-in users may remove rows themselves (expect: follows, post_comments, post_likes, posts)',
          coalesce(string_agg(distinct tablename, ', ' order by tablename), 'none')
   from pg_policies where schemaname = 'public' and cmd = 'DELETE'
 

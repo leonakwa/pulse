@@ -7,10 +7,11 @@ const LINKS = [
   { href: '/admin', label: 'Overview', exact: true },
   { href: '/admin/users', label: 'Users', exact: false },
   { href: '/admin/posts', label: 'Posts', exact: false },
+  { href: '/admin/reports', label: 'Reports', exact: false },
   { href: '/admin/activity', label: 'Activity', exact: false },
 ];
 
-export function AdminNav() {
+export function AdminNav({ openReports = 0 }: { openReports?: number }) {
   const pathname = usePathname();
   return (
     <nav aria-label="Admin" className="-mx-1 mt-3 flex gap-1 overflow-x-auto">
@@ -24,6 +25,9 @@ export function AdminNav() {
             className={`shrink-0 rounded-full px-4 py-1.5 text-sm font-semibold ${active ? 'bg-brand text-brand-fg' : 'text-muted hover:text-fg'}`}
           >
             {l.label}
+            {l.href === '/admin/reports' && openReports > 0 ? (
+              <span className="ml-1.5 rounded-full bg-danger px-1.5 text-xs font-bold text-white">{openReports}</span>
+            ) : null}
           </Link>
         );
       })}

@@ -123,3 +123,12 @@ sign-in, which cascades to everything you created; admins are protected). Not bu
 approval, blocking and muting people, two-factor sign-in. The privacy policy is a plain-language draft: confirm the
 minimum age and contact details for your country and have it reviewed before launch. Optional env var
 `NEXT_PUBLIC_CONTACT_EMAIL` shows a contact address on the policy page.
+
+## Reports and moderation
+Members can report a post, a comment or an account (`ReportButton`). Reports are written only by `report_content()`:
+it checks the reason, blocks reporting yourself or the same thing twice, limits 10 reports an hour, and saves a copy of
+the reported text so admins still see it if it is edited or deleted. Members cannot read reports at all. Admins work the
+queue at `/admin/reports` (open/closed, with a count badge in the admin menu): delete the post or comment (this closes
+its reports), dismiss, or mark resolved; to suspend an account they use Manage account on the person's page. Every
+decision is written to the admin activity log. Not built yet: telling the reporter the outcome, automatic hiding after
+many reports, and repeat-offender tracking.
