@@ -11,7 +11,14 @@ export const metadata: Metadata = {
   description: 'Share moments, connect with people and earn XP for genuine participation.',
 };
 
-export const viewport: Viewport = { width: 'device-width', initialScale: 1 };
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#F3F6FB' },
+    { media: '(prefers-color-scheme: dark)', color: '#0B1020' },
+  ],
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
