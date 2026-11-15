@@ -31,7 +31,11 @@ export async function updateSetting(key: string, value: string | boolean): Promi
   if (!user) return { error: 'Please sign in again.' };
 
   const { data, error } = await supabase.from('user_settings').update(patch).eq('user_id', user.id).select('user_id');
-  if (error || !data || data.length === 0) return { error: 'Could not save your setting. Please try again.' };
+  if (error || !data || data.length === 0) {
+    // Temporary while we test: include the real reason so a failing switch can be diagnosed.
+    console.error('updateSetting failed:', error?.message ?? 'no settings row');
+    return { error: `Could not save your setting. Please try again. (${error?.message ?? 'no settings row found'})` };
+  }
 
   revalidatePath('/', 'layout');
   return {};
