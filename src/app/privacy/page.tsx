@@ -49,6 +49,7 @@ export default function PrivacyPolicyPage() {
             'Your profile: name, username, bio, location (optional), profile picture and cover photo.',
             'What you create: posts, photos, comments, likes, shares and follows.',
             'Private messages you send and receive.',
+            'Reports you send about posts, comments or accounts (private, and seen only by administrators).',
             'Your settings and preferences, such as theme, notification choices and privacy choices.',
           ]}
         />
@@ -120,7 +121,7 @@ export default function PrivacyPolicyPage() {
       <Section title="7. How long we keep it">
         <p>
           We keep your information while your account exists. When you delete your account, it is removed as described above. If an
-          administrator removes a post, it is deleted and the removal is recorded in the administrator log.
+          administrator removes a post, it is deleted and the removal is recorded in the administrator log. Reports are kept so we can protect other members; if the person who made a report deletes their account, the report stays without their name.
         </p>
       </Section>
 

@@ -14,6 +14,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   } = await supabase.auth.getUser();
   if (!user) redirect('/login');
 
+  // Two-step login: a signed-in session that has not entered its code yet cannot use the app.
+  const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+  if (aal && aal.nextLevel === 'aal2' && aal.currentLevel !== 'aal2') redirect('/auth/mfa');
+
   const { data: profile } = await supabase.from('profiles').select('status, username').eq('id', user.id).maybeSingle();
   const { data: unread } = await supabase.rpc('unread_conversation_count');
   const { data: unreadNotifications } = await supabase.rpc('unread_notification_count');

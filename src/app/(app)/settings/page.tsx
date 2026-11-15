@@ -13,6 +13,7 @@ const LINKS = [
   { href: '/settings/privacy', label: 'Privacy', hint: 'Messages, search, leaderboard and your data' },
   { href: '/settings/account', label: 'Account', hint: 'Email, password and deleting your account' },
   { href: '/privacy', label: 'Privacy Policy', hint: 'How PulseHive collects, stores and protects your information' },
+  { href: '/terms', label: 'Terms of Service', hint: 'The rules for using PulseHive' },
 ];
 
 export default async function SettingsPage() {
@@ -21,6 +22,7 @@ export default async function SettingsPage() {
     data: { user },
   } = await supabase.auth.getUser();
   const me = user!;
+  const { data: isAdmin } = await supabase.rpc('is_admin');
   const { data: settings } = await supabase.from('user_settings').select('theme').eq('user_id', me.id).maybeSingle();
   const theme = (['light', 'dark', 'system'].includes(settings?.theme) ? settings?.theme : 'system') as Theme;
 
@@ -36,7 +38,10 @@ export default async function SettingsPage() {
       </section>
 
       <ul className="mt-8 divide-y divide-line border-y border-line">
-        {LINKS.map((l) => (
+        {(isAdmin === true
+          ? [...LINKS, { href: '/settings/security', label: 'Two-step login (admin)', hint: 'Protect the admin area with an authenticator app' }]
+          : LINKS
+        ).map((l) => (
           <li key={l.href}>
             <Link href={l.href} className="flex items-center justify-between gap-3 py-4 hover:bg-surface">
               <span>

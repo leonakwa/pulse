@@ -1,4 +1,4 @@
-import { notFound } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 
 // Every admin page and every admin action starts with this. Anyone who is not an admin gets a plain "not found",
@@ -12,6 +12,12 @@ export async function requireAdmin() {
 
   const { data: isAdmin } = await supabase.rpc('is_admin');
   if (isAdmin !== true) notFound();
+
+  // Admins must have signed in with their authenticator code (the database checks this too).
+  const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+  if (aal?.currentLevel !== 'aal2') {
+    redirect(aal?.nextLevel === 'aal2' ? '/auth/mfa?next=/admin' : '/settings/security?admin=1');
+  }
 
   return { supabase, user };
 }

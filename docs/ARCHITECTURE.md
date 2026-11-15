@@ -132,3 +132,11 @@ queue at `/admin/reports` (open/closed, with a count badge in the admin menu): d
 its reports), dismiss, or mark resolved; to suspend an account they use Manage account on the person's page. Every
 decision is written to the admin activity log. Not built yet: telling the reporter the outcome, automatic hiding after
 many reports, and repeat-offender tracking.
+
+## Admin two-step login and Terms
+Admins must sign in with a code from an authenticator app (TOTP, Supabase MFA). `requireAdmin()` sends admins who have
+not entered their code to `/auth/mfa` (or to set it up at `/settings/security`), and `assert_admin()` in the database
+refuses to run unless the session token says `aal2`, so a stolen password alone is not enough. Anyone who enables it
+(only admins can for now) must enter the code on every sign-in to use the app. There is no recovery by email: if an admin
+loses their phone, remove the factor with SQL (see the note in 0013_admin_mfa.sql). The Terms of Service page is
+`/terms` (public); it is a plain-language draft that needs the same legal review as the Privacy Policy.

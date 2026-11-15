@@ -48,6 +48,10 @@ export default function RegisterPage() {
       </form>
       <p className="mt-6 text-center text-xs text-muted">
         By creating an account you agree to the{' '}
+        <Link href="/terms" className="font-semibold text-brand">
+          Terms of Service
+        </Link>{' '}
+        and the{' '}
         <Link href="/privacy" className="font-semibold text-brand">
           Privacy Policy
         </Link>

@@ -71,6 +71,11 @@ export async function signIn(_prev: FormState, formData: FormData): Promise<Form
     }
     return { error: 'Incorrect email or password.' }; // same message for unknown email and wrong password
   }
+
+  // If two-step login is on, the second step comes before anything else.
+  const { data: aal } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+  if (aal && aal.nextLevel === 'aal2' && aal.currentLevel !== 'aal2') redirect('/auth/mfa');
+
   redirect('/feed');
 }
 
