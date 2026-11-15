@@ -61,7 +61,7 @@ export default async function XpPage({ searchParams }: Props) {
       .order('created_at', { ascending: false })
       .order('id', { ascending: false })
       .range(from, from + HISTORY_PER_PAGE - 1),
-    supabase.rpc('my_leaderboard_rank', { p_period: 'all' }),
+    supabase.rpc('my_standing', { p_period: 'all' }),
   ]);
 
   const xp = Number(profileRes.data?.xp_total ?? 0);
@@ -106,7 +106,7 @@ export default async function XpPage({ searchParams }: Props) {
           </div>
         </dl>
         <Link href="/leaderboard" className="mt-3 inline-block text-sm font-semibold text-brand">
-          See the leaderboard →
+          See your standing →
         </Link>
       </section>
 

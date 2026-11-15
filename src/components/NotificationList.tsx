@@ -23,6 +23,8 @@ const VERBS: Record<NotificationView['type'], string> = {
   comment: 'commented on your post',
   message: 'sent you a message',
   share: 'shared your post',
+  reply: 'replied to your comment',
+  comment_like: 'liked your comment',
   level_up: '',
 };
 
@@ -148,7 +150,7 @@ export function NotificationList({ userId, initialItems, initialCursor }: Props)
                       </>
                     )}
                   </p>
-                  {n.type === 'comment' && n.preview ? <p className="mt-0.5 line-clamp-2 text-sm text-muted">&ldquo;{n.preview}&rdquo;</p> : null}
+                  {(n.type === 'comment' || n.type === 'reply') && n.preview ? <p className="mt-0.5 line-clamp-2 text-sm text-muted">&ldquo;{n.preview}&rdquo;</p> : null}
                   <time dateTime={n.createdAt} suppressHydrationWarning className="mt-0.5 block text-xs text-muted">
                     {timeAgo(n.createdAt)}
                   </time>

@@ -19,7 +19,7 @@ export default async function PrivacySettingsPage() {
   } = await supabase.auth.getUser();
   const { data: s } = await supabase
     .from('user_settings')
-    .select('message_permission, discoverable, show_on_leaderboard')
+    .select('message_permission, discoverable')
     .eq('user_id', user!.id)
     .maybeSingle();
 
@@ -38,12 +38,6 @@ export default async function PrivacySettingsPage() {
           label="Show me in search and suggestions"
           description="When off, people can still open your profile if they have the link"
           initial={s ? s.discoverable !== false : true}
-        />
-        <ToggleRow
-          settingKey="show_on_leaderboard"
-          label="Show me on the leaderboard"
-          description="You keep earning XP and levels either way"
-          initial={s ? s.show_on_leaderboard !== false : true}
         />
       </div>
 

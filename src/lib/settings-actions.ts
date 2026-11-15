@@ -8,7 +8,7 @@ import { getSiteUrl } from '@/lib/site-url';
 
 const BOOLEAN_KEYS = [
   'notify_follows', 'notify_likes', 'notify_comments', 'notify_shares', 'notify_messages',
-  'discoverable', 'show_on_leaderboard',
+  'discoverable',
 ];
 const THEMES = ['light', 'dark', 'system'];
 const MESSAGE_PERMISSIONS = ['everyone', 'following', 'nobody'];

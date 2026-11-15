@@ -110,7 +110,7 @@ export default function PrivacyPolicyPage() {
         <List
           items={[
             'Edit your profile and photos at any time in Settings.',
-            'Choose who can message you, whether you appear in search and suggestions, and whether you appear on the leaderboard.',
+            'Choose who can message you, and whether you appear in search and suggestions. Your leaderboard standing is private: only you can see it.',
             'Turn notifications on or off by type.',
             'Download a copy of your data from Settings, Privacy.',
             'Delete your account from Settings, Account. This permanently removes your account, profile, posts, comments, likes, follows, XP, notifications and the messages you sent, and removes your photos. Shares of your posts by others will show as no longer available. Our providers may keep short-lived backup copies for a limited time.',

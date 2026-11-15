@@ -82,8 +82,7 @@ export default function TermsPage() {
 
       <Section title="4. XP, levels and the leaderboard">
         <p>
-          XP and levels are awarded automatically for genuine activity. We may remove XP, adjust levels or remove you from the
-          leaderboard if we find that they were gained through spam, fake accounts, coordinated engagement or other manipulation. We
+          XP and levels are awarded automatically for genuine activity. We may remove XP, adjust levels or reset your standing if we find that they were gained through spam, fake accounts, coordinated engagement or other manipulation. We
           may change how XP and levels work over time.
         </p>
       </Section>

@@ -140,3 +140,11 @@ refuses to run unless the session token says `aal2`, so a stolen password alone 
 (only admins can for now) must enter the code on every sign-in to use the app. There is no recovery by email: if an admin
 loses their phone, remove the factor with SQL (see the note in 0013_admin_mfa.sql). The Terms of Service page is
 `/terms` (public); it is a plain-language draft that needs the same legal review as the Privacy Policy.
+
+## Private standing and comment replies
+The leaderboard is gone as a public list: `my_standing()` returns only the signed-in person's own place, XP and the
+number of ranked members, and the old list functions are removed, so no one can fetch other people's standing through
+the database either. (Levels and XP still show on profiles.) Comments can be liked (`comment_likes`) and replied to
+(`parent_id`, one level deep, enforced by a trigger). Counters are kept by triggers. A reply earns reply XP instead of
+comment XP so nothing is paid twice; likes and replies notify the comment's author. The same migration restricts which
+columns members can fill in when adding comments, likes, follows and messages, so counters, dates and ids cannot be forged.

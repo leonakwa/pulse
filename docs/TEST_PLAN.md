@@ -24,6 +24,7 @@ Tick each line. Write down anything that fails with: what you did, what you expe
 
 ## 4. Likes, comments, follows
 - [ ] Like and unlike: count changes and survives a refresh. Cannot like twice.
+- [ ] Like a comment, reply to a comment, reply to a reply (it attaches under the same comment). "View replies" and "More replies" work. Deleting a comment deletes its replies. Comment likes and replies earn XP and send notifications.
 - [ ] Comment, delete own comment, count changes. A 301-character comment is refused.
 - [ ] Follow and unfollow from a profile, from search, from the followers list. Counts update. You cannot follow yourself.
 
@@ -46,7 +47,7 @@ Tick each line. Write down anything that fails with: what you did, what you expe
 - [ ] Posting earns XP; XP history shows it. The daily limit stops extra XP (post 4+ times in a day).
 - [ ] Likes/comments/follows from account B (over 24 hours old) earn XP for A. Your own likes and comments earn nothing.
 - [ ] Unlike and like again: no extra XP.
-- [ ] Progress bars on the XP page match your posts and followers. The leaderboard lists you; opting out hides you.
+- [ ] Progress bars on the XP page match your posts and followers. Your standing page shows only your own place and nobody else's.
 
 ## 9. Sharing
 - [ ] Share a post with a comment, undo it, copy the link, use "Share via". You cannot share your own post or the same post twice.
