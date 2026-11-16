@@ -27,17 +27,17 @@ select check_name, result from (
   where ns.nspname = 'public' and p.prorettype <> 'trigger'::regtype and has_function_privilege('authenticated', p.oid, 'execute')
 
   union all
-  select 5, 'Tables where signed-in users may add rows themselves (expect: follows, messages, post_comments, post_likes)',
+  select 5, 'Tables where signed-in users may add rows themselves (expect: comment_likes, follows, messages, post_comments, post_likes, profile_education, profile_places, profile_work)',
          coalesce(string_agg(distinct tablename, ', ' order by tablename), 'none')
   from pg_policies where schemaname = 'public' and cmd = 'INSERT'
 
   union all
-  select 6, 'Tables where signed-in users may edit rows themselves (expect: posts, profiles, user_settings)',
+  select 6, 'Tables where signed-in users may edit rows themselves (expect: posts, profile_education, profile_places, profile_work, profiles, user_settings)',
          coalesce(string_agg(distinct tablename, ', ' order by tablename), 'none')
   from pg_policies where schemaname = 'public' and cmd = 'UPDATE'
 
   union all
-  select 7, 'Tables where signed-in users may remove rows themselves (expect: follows, post_comments, post_likes, posts)',
+  select 7, 'Tables where signed-in users may remove rows themselves (expect: comment_likes, follows, post_comments, post_likes, posts, profile_education, profile_work)',
          coalesce(string_agg(distinct tablename, ', ' order by tablename), 'none')
   from pg_policies where schemaname = 'public' and cmd = 'DELETE'
 

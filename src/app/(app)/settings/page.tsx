@@ -9,6 +9,7 @@ export const metadata: Metadata = { title: 'Settings' };
 
 const LINKS = [
   { href: '/settings/profile', label: 'Edit profile', hint: 'Name, username, bio, location and photos' },
+  { href: '/settings/about', label: 'About: education and work', hint: 'Schools, jobs, hometown and where you live' },
   { href: '/settings/notifications', label: 'Notifications', hint: 'Choose what you get notified about' },
   { href: '/settings/privacy', label: 'Privacy', hint: 'Messages, search, leaderboard and your data' },
   { href: '/settings/account', label: 'Account', hint: 'Email, password and deleting your account' },

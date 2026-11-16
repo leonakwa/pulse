@@ -15,6 +15,9 @@ Tick each line. Write down anything that fails with: what you did, what you expe
 - [ ] Edit name, username, bio, location: saved after refresh. A taken username is refused.
 - [ ] Upload profile picture and cover photo: appear on profile and posts. Remove works. A very large photo (5 MB+) uploads. A non-image file is refused.
 
+- [ ] Settings > About: add a school (secondary school), a university, a job, and your places. Edit and remove them. First education and first work each earn a little XP once.
+- [ ] Set one item to "Only me": other accounts cannot see it on your profile; you see an "Only you" tag. Years: "I study here now" removes the end year; an end year before the start year is refused. 11 items are refused.
+
 ## 3. Posts and feed
 - [ ] Post text only, photo only, text with 4 photos. A 5th photo is refused. 501 characters is refused.
 - [ ] Posts survive a refresh. Edit shows "edited". Delete removes the post and photos.

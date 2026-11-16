@@ -27,6 +27,9 @@ export default async function EditProfilePage() {
         ← Back to profile
       </Link>
       <h1 className="mt-4 font-display text-2xl font-bold">Edit profile</h1>
+      <Link href="/settings/about" className="mt-2 inline-block text-sm font-semibold text-brand">
+        Add your education, work and places →
+      </Link>
 
       <div className="mt-6 space-y-4">
         <p className="text-sm text-muted">Photos are saved as soon as you choose them.</p>

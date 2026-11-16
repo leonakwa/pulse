@@ -46,7 +46,7 @@ export default function PrivacyPolicyPage() {
         <List
           items={[
             'Your email address and password (your password is handled by our sign-in system and is never stored or visible to us in readable form).',
-            'Your profile: name, username, bio, location (optional), profile picture and cover photo.',
+            'Your profile: name, username, bio, location (optional), profile picture and cover photo, and, if you choose to add them, your education, work history, hometown and current city (each can be public or only visible to you).',
             'What you create: posts, photos, comments, likes, shares and follows.',
             'Private messages you send and receive.',
             'Reports you send about posts, comments or accounts (private, and seen only by administrators).',
@@ -78,7 +78,7 @@ export default function PrivacyPolicyPage() {
       <Section title="3. Who can see what">
         <List
           items={[
-            'Your profile, posts, comments, likes, level and XP can be seen by other signed-in members of PulseHive. They are not shown to the public web.',
+            'Your profile, posts, comments, likes, level and XP can be seen by other signed-in members of PulseHive (except education, work and places you set to "Only me"). They are not shown to the public web.',
             'Your private messages can be read only by you and the person you are chatting with. They are not end-to-end encrypted.',
             'Your email address can be seen only by you and PulseHive administrators.',
             'PulseHive administrators can see account details (such as email, join date and last sign-in), posts, and moderation history. The admin dashboard does not display message contents, passwords or password hashes. Technical administrators of our database and hosting providers can access stored data as needed to run the service.',

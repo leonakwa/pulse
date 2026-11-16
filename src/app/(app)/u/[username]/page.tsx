@@ -7,6 +7,8 @@ import { Avatar } from '@/components/Avatar';
 import { Feed } from '@/components/Feed';
 import { FollowButton } from '@/components/FollowButton';
 import { LevelBadge } from '@/components/LevelBadge';
+import { AboutSection } from '@/components/AboutSection';
+import { getAbout } from '@/lib/about';
 import { MessageButton } from '@/components/MessageButton';
 import { ReportButton } from '@/components/ReportButton';
 
@@ -46,6 +48,7 @@ export default async function ProfilePage({ params }: Props) {
       : supabase.from('follows').select('*', { count: 'exact', head: true }).eq('follower_id', me.id).eq('following_id', profile.id),
   ]);
 
+  const about = await getAbout(supabase, profile.id);
   const joined = new Date(profile.created_at).toLocaleDateString('en', { month: 'long', year: 'numeric' });
   const base = `/u/${profile.username}`;
 
@@ -122,6 +125,8 @@ export default async function ProfilePage({ params }: Props) {
           </div>
         </dl>
       </div>
+
+      <AboutSection about={about} isOwn={isOwn} />
 
       <section className="mt-6 border-t border-line">
         <Feed

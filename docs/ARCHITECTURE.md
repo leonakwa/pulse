@@ -148,3 +148,11 @@ the database either. (Levels and XP still show on profiles.) Comments can be lik
 (`parent_id`, one level deep, enforced by a trigger). Counters are kept by triggers. A reply earns reply XP instead of
 comment XP so nothing is paid twice; likes and replies notify the comment's author. The same migration restricts which
 columns members can fill in when adding comments, likes, follows and messages, so counters, dates and ids cannot be forged.
+
+## Profile About (phase 13)
+Education (primary to university), work and places (current city, hometown) live in `profile_education`, `profile_work`
+and `profile_places`. Every item is Public or Only me, and that is enforced by Row Level Security: an "Only me" row is
+simply never returned to anyone else. Members can only fill in the intended columns, up to 10 items of each kind, with
+sensible limits on text and years. The first education item and the first work item each earn XP once (unique key per
+user). They are included in the data download and deleted with the account. Not built yet: searching people by school,
+suggesting classmates or colleagues, and verification of schools or employers.

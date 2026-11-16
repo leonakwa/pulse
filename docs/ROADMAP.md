@@ -4,7 +4,7 @@ Done: accounts, profiles and photos, posts and feed, likes, comments (with likes
 private messages, notifications, XP and levels (private standing), sharing, settings and privacy, admin dashboard,
 reports and moderation, Terms and Privacy Policy, admin two-step login, logo and domain.
 
-## Phase 13: Profile "About" (education and more)
+## Phase 13: Profile "About" (education and more) - BUILT
 - Education: add several schools (primary, secondary, college/university, other) with school name, years, and field of study.
 - Work: add jobs (title, place, years), plus current city and hometown.
 - Shown on the profile in an "About" section; each item can be edited, removed, and set to Public or Only me.
