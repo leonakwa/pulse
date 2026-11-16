@@ -23,7 +23,9 @@ function year(fd: FormData, key: string): number | null | 'invalid' {
 function friendly(error: { code?: string; message?: string } | null): string {
   if (error?.message?.includes('too_many_items')) return 'You can add up to 10 of these. Remove one first.';
   if (error?.code === '23514') return 'Please check the text lengths and years.';
-  return 'Could not save. Please try again.';
+  // Temporary while we test: include the real reason so a failing save can be diagnosed.
+  console.error('about save failed:', error?.code, error?.message);
+  return `Could not save. Please try again. (${error?.message ?? 'unknown error'})`;
 }
 
 async function currentUser() {
