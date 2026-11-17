@@ -149,10 +149,16 @@ export async function savePlaces(_prev: FormState, fd: FormData): Promise<FormSt
   const { supabase, user } = await currentUser();
   if (!user) return { error: 'Please sign in again.' };
 
-  const { error } = await supabase
-    .from('profile_places')
-    .upsert({ user_id: user.id, current_city: orNull(city), hometown: orNull(home), visibility }, { onConflict: 'user_id' });
-  if (error) return { error: friendly(error) };
+  const values = { current_city: orNull(city), hometown: orNull(home), visibility };
+
+  // Update first; if there is no row yet, add one. (A one-step "upsert" also tries to rewrite the user_id column,
+  // which members are deliberately not allowed to change, and that is what was being refused.)
+  const { data: updated, error: updateError } = await supabase.from('profile_places').update(values).eq('user_id', user.id).select('user_id');
+  if (updateError) return { error: friendly(updateError) };
+  if (!updated || updated.length === 0) {
+    const { error: insertError } = await supabase.from('profile_places').insert({ user_id: user.id, ...values });
+    if (insertError) return { error: friendly(insertError) };
+  }
 
   revalidatePath('/', 'layout');
   return { success: 'Saved.' };
