@@ -10,7 +10,7 @@ reports and moderation, Terms and Privacy Policy, admin two-step login, logo and
 - Shown on the profile in an "About" section; each item can be edited, removed, and set to Public or Only me.
 - Optional XP for completing your profile.
 
-## Phase 14: Group chats (in Messages)
+## Phase 14: Group chats (in Messages) - BUILT
 - Start a chat with several people; name it, add or remove members, leave it.
 - Same live messaging, unread badges and notifications as one-to-one chats; the creator can manage members.
 

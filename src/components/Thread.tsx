@@ -1,40 +1,53 @@
 'use client';
 
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import type { RealtimeChannel } from '@supabase/supabase-js';
 import { Avatar } from '@/components/Avatar';
 import { ClientTime } from '@/components/ClientTime';
+import { GroupAvatar } from '@/components/GroupAvatar';
+import { GroupPanel, type GroupMember } from '@/components/GroupPanel';
 import { createClient } from '@/lib/supabase/client';
 import { loadOlderMessages, markConversationRead, sendMessage } from '@/lib/message-actions';
 import { toMessageView, type MessageView, type RawMessage } from '@/lib/messages';
 import type { Cursor } from '@/lib/posts';
 
-type Other = { id: string; username: string; fullName: string; avatarUrl: string | null };
+type Person = { id: string; username: string; fullName: string; avatarUrl: string | null };
+export type GroupInfo = { name: string; myRole: 'owner' | 'member'; members: GroupMember[] };
+
 type Props = {
   conversationId: string;
   currentUserId: string;
-  other: Other;
+  other: Person | null; // the other person in a one-to-one chat
+  group: GroupInfo | null; // set for group chats
   initialMessages: MessageView[];
   initialCursor: Cursor | null;
 };
 
-export function Thread({ conversationId, currentUserId, other, initialMessages, initialCursor }: Props) {
+export function Thread({ conversationId, currentUserId, other, group, initialMessages, initialCursor }: Props) {
   const [messages, setMessages] = useState<MessageView[]>(initialMessages);
   const [cursor, setCursor] = useState<Cursor | null>(initialCursor);
   const [text, setText] = useState('');
   const [sending, setSending] = useState(false);
   const [loadingOlder, setLoadingOlder] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [panelOpen, setPanelOpen] = useState(false);
 
   const bottomRef = useRef<HTMLDivElement>(null);
   const nearBottom = useRef(true);
   const prevHeight = useRef<number | null>(null);
   const firstRun = useRef(true);
 
+  // Who is who, for names and pictures beside messages.
+  const people = useMemo(() => {
+    const map = new Map<string, Person>();
+    if (group) group.members.forEach((m) => map.set(m.id, m));
+    else if (other) map.set(other.id, other);
+    return map;
+  }, [group, other]);
+
   const addMessage = (m: MessageView) => setMessages((prev) => (prev.some((x) => x.id === m.id) ? prev : [...prev, m]));
 
-  // Remember whether the reader is at the bottom, so new messages only auto-scroll when they are.
   useEffect(() => {
     const onScroll = () => {
       nearBottom.current = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 160;
@@ -45,7 +58,6 @@ export function Thread({ conversationId, currentUserId, other, initialMessages, 
 
   useLayoutEffect(() => {
     if (prevHeight.current !== null) {
-      // Older messages were added above: keep the reader where they were.
       window.scrollBy(0, document.documentElement.scrollHeight - prevHeight.current);
       prevHeight.current = null;
       return;
@@ -127,14 +139,32 @@ export function Thread({ conversationId, currentUserId, other, initialMessages, 
         <Link href="/messages" aria-label="Back to messages" className="text-xl text-muted hover:text-fg">
           ←
         </Link>
-        <Link href={`/u/${other.username}`} className="flex min-w-0 items-center gap-2">
-          <Avatar name={other.fullName} url={other.avatarUrl} size={36} />
-          <span className="min-w-0">
-            <span className="block truncate font-semibold leading-tight">{other.fullName}</span>
-            <span className="block truncate text-xs text-muted">@{other.username}</span>
-          </span>
-        </Link>
+        {group ? (
+          <button type="button" onClick={() => setPanelOpen((v) => !v)} aria-expanded={panelOpen} className="flex min-w-0 items-center gap-2 text-left">
+            <GroupAvatar size={36} />
+            <span className="min-w-0">
+              <span className="block truncate font-semibold leading-tight">{group.name}</span>
+              <span className="block truncate text-xs text-muted">
+                {group.members.length} members · tap for details
+              </span>
+            </span>
+          </button>
+        ) : other ? (
+          <Link href={`/u/${other.username}`} className="flex min-w-0 items-center gap-2">
+            <Avatar name={other.fullName} url={other.avatarUrl} size={36} />
+            <span className="min-w-0">
+              <span className="block truncate font-semibold leading-tight">{other.fullName}</span>
+              <span className="block truncate text-xs text-muted">@{other.username}</span>
+            </span>
+          </Link>
+        ) : null}
       </div>
+
+      {group && panelOpen ? (
+        <div className="-mx-4 border-b border-line px-4 py-4">
+          <GroupPanel conversationId={conversationId} groupName={group.name} members={group.members} myId={currentUserId} myRole={group.myRole} />
+        </div>
+      ) : null}
 
       <div className="flex-1 py-4">
         {cursor ? (
@@ -146,16 +176,28 @@ export function Thread({ conversationId, currentUserId, other, initialMessages, 
         ) : null}
 
         {messages.length === 0 ? (
-          <p className="py-10 text-center text-sm text-muted">Say hello to {other.fullName.split(' ')[0]}.</p>
+          <p className="py-10 text-center text-sm text-muted">
+            {group ? 'No messages yet. Say hello to the group.' : `Say hello to ${other?.fullName.split(' ')[0] ?? 'them'}.`}
+          </p>
         ) : null}
 
         <ul className="space-y-2">
           {messages.map((m) => {
+            if (m.kind === 'system') {
+              return (
+                <li key={m.id} className="py-1 text-center text-xs text-muted">
+                  {m.body}
+                </li>
+              );
+            }
             const mine = m.senderId === currentUserId;
+            const sender = people.get(m.senderId);
+            const senderName = sender?.fullName ?? 'Former member';
             return (
               <li key={m.id} className={`flex items-end gap-2 ${mine ? 'justify-end' : 'justify-start'}`}>
-                {!mine ? <Avatar name={other.fullName} url={other.avatarUrl} size={28} /> : null}
+                {!mine ? <Avatar name={senderName} url={sender?.avatarUrl ?? null} size={28} /> : null}
                 <div className={`flex max-w-[78%] flex-col ${mine ? 'items-end' : 'items-start'}`}>
+                  {group && !mine ? <span className="mb-0.5 ml-1 text-[11px] font-semibold text-muted">{senderName}</span> : null}
                   <p
                     className={`whitespace-pre-line break-words rounded-2xl px-3.5 py-2 text-[15px] ${
                       mine ? 'rounded-br-md bg-brand text-brand-fg' : 'rounded-bl-md border border-line bg-surface'
@@ -203,11 +245,7 @@ export function Thread({ conversationId, currentUserId, other, initialMessages, 
             placeholder="Write a message..."
             className="input max-h-32 resize-none !py-2.5"
           />
-          <button
-            type="submit"
-            disabled={sending || text.trim() === ''}
-            className="shrink-0 rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-brand-fg disabled:opacity-60"
-          >
+          <button type="submit" disabled={sending || text.trim() === ''} className="shrink-0 rounded-full bg-brand px-5 py-2.5 text-sm font-semibold text-brand-fg disabled:opacity-60">
             {sending ? '...' : 'Send'}
           </button>
         </form>

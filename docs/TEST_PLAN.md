@@ -41,6 +41,10 @@ Tick each line. Write down anything that fails with: what you did, what you expe
 - [ ] Set B to "No one" (Settings > Privacy): A can no longer message B. "People I follow" works too.
 - [ ] A third account cannot open the A-B conversation link.
 
+- [ ] Group chats: Messages > New group. Name it, add 2+ people (3 with you); each member sees it in their inbox. Messages show the sender's name and picture. "Ada created the group" appears as a small centre line. A 4th person added later cannot see messages from before they joined.
+- [ ] Owner: rename, add people, remove someone (they lose access). A non-owner has no add/remove/rename. Anyone can leave; if the owner leaves, the oldest member becomes owner; when the last person leaves the group disappears.
+- [ ] A person set to "No one" (Settings > Privacy) cannot be added to a group. Notifications say "sent a message in <group name>". Unread badge works for groups.
+
 ## 7. Notifications
 - [ ] Follow, like, comment, share, message and level-up each create a notification with the right person, text and link.
 - [ ] Undo the like or follow: the notification disappears. Your own actions never notify you.

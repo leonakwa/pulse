@@ -4,11 +4,18 @@ import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import type { RealtimeChannel } from '@supabase/supabase-js';
 import { Avatar } from '@/components/Avatar';
+import { GroupAvatar } from '@/components/GroupAvatar';
 import { createClient } from '@/lib/supabase/client';
 import { getInbox, INBOX_PAGE, type ConversationView } from '@/lib/conversations';
 import { timeAgo } from '@/lib/time';
 
 type Props = { initial: ConversationView[]; currentUserId: string };
+
+function previewOf(c: ConversationView, me: string): string {
+  if (c.lastKind === 'system') return c.lastBody;
+  const who = c.lastSenderId === me ? 'You: ' : c.isGroup && c.lastSenderName ? `${c.lastSenderName.split(' ')[0]}: ` : '';
+  return `${who}${c.lastBody}`;
+}
 
 export function InboxList({ initial, currentUserId }: Props) {
   const [items, setItems] = useState<ConversationView[]>(initial);
@@ -73,7 +80,7 @@ export function InboxList({ initial, currentUserId }: Props) {
     return (
       <div className="mt-6 rounded-2xl border border-dashed border-line px-4 py-10 text-center">
         <p className="font-semibold">No messages yet</p>
-        <p className="mt-1 text-sm text-muted">Tap New message to start a conversation.</p>
+        <p className="mt-1 text-sm text-muted">Tap New message to chat with someone, or New group to chat with several people.</p>
       </div>
     );
   }
@@ -86,24 +93,23 @@ export function InboxList({ initial, currentUserId }: Props) {
           return (
             <li key={c.id}>
               <Link href={`/messages/${c.id}`} className="flex items-center gap-3 py-3">
-                <Avatar name={c.other.fullName} url={c.other.avatarUrl} size={52} />
+                {c.isGroup ? <GroupAvatar size={52} /> : <Avatar name={c.title} url={c.avatarUrl} size={52} />}
                 <div className="min-w-0 flex-1">
                   <div className="flex items-baseline justify-between gap-2">
-                    <p className={`truncate ${unread ? 'font-bold' : 'font-semibold'}`}>{c.other.fullName}</p>
+                    <p className={`truncate ${unread ? 'font-bold' : 'font-semibold'}`}>
+                      {c.title}
+                      {c.isGroup ? <span className="ml-1.5 text-xs font-normal text-muted">{c.memberCount} members</span> : null}
+                    </p>
                     <time dateTime={c.lastAt} suppressHydrationWarning className="shrink-0 text-xs text-muted">
                       {timeAgo(c.lastAt)}
                     </time>
                   </div>
-                  <p className={`truncate text-sm ${unread ? 'font-semibold text-fg' : 'text-muted'}`}>
-                    {c.lastSenderId === currentUserId ? 'You: ' : ''}
-                    {c.lastBody}
+                  <p className={`truncate text-sm ${unread ? 'font-semibold text-fg' : 'text-muted'} ${c.lastKind === 'system' ? 'italic' : ''}`}>
+                    {previewOf(c, currentUserId)}
                   </p>
                 </div>
                 {unread ? (
-                  <span
-                    aria-label={`${c.unread} unread`}
-                    className="min-w-[1.25rem] shrink-0 rounded-full bg-brand px-1.5 text-center text-xs font-bold leading-5 text-brand-fg"
-                  >
+                  <span aria-label={`${c.unread} unread`} className="min-w-[1.25rem] shrink-0 rounded-full bg-brand px-1.5 text-center text-xs font-bold leading-5 text-brand-fg">
                     {c.unread > 9 ? '9+' : c.unread}
                   </span>
                 ) : null}

@@ -156,3 +156,13 @@ simply never returned to anyone else. Members can only fill in the intended colu
 sensible limits on text and years. The first education item and the first work item each earn XP once (unique key per
 user). They are included in the data download and deleted with the account. Not built yet: searching people by school,
 suggesting classmates or colleagues, and verification of schools or employers.
+
+## Group chats (phase 14)
+A group is a `conversations` row with `is_group = true` and a name, 3 to 50 people, and an owner (`role` on
+`conversation_participants`). Created and managed only through database functions (`create_group_chat`,
+`add_group_members`, `remove_group_member`, `leave_group`, `rename_group`); the owner manages people and the name, anyone can
+leave. Adding someone respects their "Who can message me" setting. The messages access rule now also requires
+`created_at >= joined time`, so newcomers cannot read earlier messages. "X added Y" lines are `kind = 'system'` messages that
+only the database can write; they do not count as unread and send no notifications. If the owner leaves or is deleted, the
+oldest member becomes owner; an empty group is deleted. Not built yet: group photos, admins other than the owner, muting a
+group, reactions, replying to a specific message, sending photos in chats.

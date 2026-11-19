@@ -146,7 +146,7 @@ export function NotificationList({ userId, initialItems, initialCursor }: Props)
                       </span>
                     ) : (
                       <>
-                        <span className="font-semibold">{n.actor?.fullName ?? 'Someone'}</span> {VERBS[n.type]}
+                        <span className="font-semibold">{n.actor?.fullName ?? 'Someone'}</span> {n.type === 'message' && n.preview ? `sent a message in “${n.preview}”` : VERBS[n.type]}
                       </>
                     )}
                   </p>

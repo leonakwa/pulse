@@ -40,7 +40,7 @@ export async function sendMessage(conversationId: string, body: string): Promise
   const { data, error } = await supabase
     .from('messages')
     .insert({ conversation_id: conversationId, sender_id: user.id, body: text })
-    .select('id, conversation_id, sender_id, body, created_at');
+    .select('id, conversation_id, sender_id, body, created_at, kind');
 
   const row = ((data ?? []) as unknown as RawMessage[])[0];
   if (error || !row) {

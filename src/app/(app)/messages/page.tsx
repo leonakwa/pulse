@@ -20,11 +20,16 @@ export default async function MessagesPage({ searchParams }: Props) {
 
   return (
     <div>
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between gap-2">
         <h1 className="font-display text-2xl font-bold">Messages</h1>
-        <Link href="/messages/new" className="rounded-full bg-brand px-4 py-2 text-sm font-semibold text-brand-fg">
-          New message
-        </Link>
+        <div className="flex gap-2">
+          <Link href="/messages/group/new" className="rounded-full border border-line px-4 py-2 text-sm font-semibold hover:border-brand">
+            New group
+          </Link>
+          <Link href="/messages/new" className="rounded-full bg-brand px-4 py-2 text-sm font-semibold text-brand-fg">
+            New message
+          </Link>
+        </div>
       </div>
 
       {error === 'start' ? (
@@ -32,7 +37,6 @@ export default async function MessagesPage({ searchParams }: Props) {
           Could not start that conversation. Please try again.
         </p>
       ) : null}
-
       {error === 'blocked' ? (
         <p role="alert" className="mt-4 rounded-xl border border-danger/40 bg-danger/10 px-4 py-3 text-sm text-danger">
           This person is not accepting messages from you.
